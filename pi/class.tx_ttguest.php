@@ -41,6 +41,8 @@
 
 
 require_once(PATH_tslib."class.tslib_pibase.php");
+require_once(t3lib_extMgm::extPath('tt_guest').'pi/class.recordnavigator.php');
+
 
 class tx_ttguest extends tslib_pibase {
 	var $cObj;		// The backReference to the mother cObj object set at call time
@@ -54,8 +56,10 @@ class tx_ttguest extends tslib_pibase {
 	 * Main guestbook function.
 	 */
 	function main_guestbook($content,$conf)	{
+		$this->conf = $conf;
+
 		$content="";
-		
+	
 		// *************************************
 		// *** getting configuration values:
 		// *************************************
@@ -81,6 +85,10 @@ class tx_ttguest extends tslib_pibase {
 		$globalMarkerArray["###GC1###"] = $this->cObj->stdWrap($conf["color1"],$conf["color1."]);
 		$globalMarkerArray["###GC2###"] = $this->cObj->stdWrap($conf["color2"],$conf["color2."]);
 		$globalMarkerArray["###GC3###"] = $this->cObj->stdWrap($conf["color3"],$conf["color3."]);
+
+		$this->recordCount = $this->getRecordCount($pid);
+		$globalMarkerArray["###PREVNEXT###"] = $this->getPrevNext();
+
 
 			// Substitute Global Marker Array
 		$this->orig_templateCode= $this->cObj->substituteMarkerArray($this->orig_templateCode, $globalMarkerArray);
@@ -206,7 +214,25 @@ class tx_ttguest extends tslib_pibase {
 	 * Main guestbook function.
 	 */
 	function getItems($pid)	{
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery('*', 'tt_guest', 'pid IN ('.$pid.')'.$this->enableFields, '', 'crdate DESC');
+		
+		if(!isset($_REQUEST['offset']))
+		{
+			$offset = 0;
+		}
+		else
+		{
+			$offset = (int) $_REQUEST['offset'];
+		}
+	
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'*', 
+			'tt_guest', 
+			'pid IN ('.$pid.')'.$this->enableFields, 
+			'', 
+			'crdate DESC',
+			"{$offset}, {$this->conf['limit']}"
+		);
+		
 		$out = array();
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			$out[] = $row;
@@ -223,6 +249,35 @@ class tx_ttguest extends tslib_pibase {
 		} else {
 			return $str;
 		}
+	}
+
+	function getRecordCount($pid)
+	{
+		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+			'COUNT(*) AS thecount', 
+			'tt_guest', 
+			'pid IN ('.$pid.')'.$this->enableFields, 
+			'', 
+			'',
+			''
+		);
+
+		list($thecount) = mysql_fetch_row($res);
+
+		return $thecount;
+	}
+	
+	function getPrevNext()
+	{
+		$nav = new RecordNavigator(
+			$this->recordCount, 
+			$_REQUEST['offset'], 
+			$this->conf['limit'], 
+			'?pid='.$GLOBALS['TSFE']->id
+		);
+		$nav->createSequence();
+		$nav->createPrevNext($this->conf['previousLabel'], $this->conf['nextLabel']);
+		return $nav->getNavigator();
 	}
 }
 

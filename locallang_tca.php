@@ -5,7 +5,7 @@ $LOCAL_LANG = Array (
 		'tt_guest' => 'Guestbook',
 		'tt_guest.cr_name' => 'Sender name:',
 		'tt_guest.cr_email' => 'Sender email:',
-		'pi' => 'Guestbook',
+		'pi' => 'Guestbook'
 	),
 	'dk' => Array (
 		'tt_guest' => 'Gæstebog',

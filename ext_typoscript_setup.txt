@@ -32,7 +32,11 @@ plugin.tt_guest {
   templateFile = {$plugin.tt_guest.file.templateFile}
   pid_list.field = pages
   code.field = select_key
-
+  
+  limit = 2
+  nextLabel = next
+  previousLabel = previous
+  
   # Global wraps
   wrap1.wrap = {$plugin.tt_guest.wrap1}
   wrap2.wrap = {$plugin.tt_guest.wrap2}

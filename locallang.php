@@ -4,8 +4,6 @@ $LOCAL_LANG = Array (
 	'default' => Array (
 		'plugins_title' => 'Guestbook',
 		'plugins_description' => 'Adds a guestbook to the page.',
-		'nextLabel' => 'Next',
-		'previousLabel' => 'Previous'
 	),
 	'dk' => Array (
 		'plugins_title' => 'Gæstebog',
@@ -32,8 +30,6 @@ $LOCAL_LANG = Array (
 	'nl' => Array (
 		'plugins_title' => 'Gastenboek',
 		'plugins_description' => 'Toevoegen gastenboek op de pagina.',
-		'nextLabel' => 'Volgende',
-		'previousLabel' => 'Vorige'
 	),
 	'cz' => Array (
 		'plugins_title' => 'Kniha hostù',

@@ -86,9 +86,6 @@ class tx_ttguest extends tslib_pibase {
 		$globalMarkerArray["###GC2###"] = $this->cObj->stdWrap($conf["color2"],$conf["color2."]);
 		$globalMarkerArray["###GC3###"] = $this->cObj->stdWrap($conf["color3"],$conf["color3."]);
 
-		$this->recordCount = $this->getRecordCount($pid);
-		$globalMarkerArray["###PREVNEXT###"] = $this->getPrevNext();
-
 
 			// Substitute Global Marker Array
 		$this->orig_templateCode= $this->cObj->substituteMarkerArray($this->orig_templateCode, $globalMarkerArray);
@@ -106,6 +103,10 @@ class tx_ttguest extends tslib_pibase {
 		$this->init($this->cObj->enableFields("tt_guest"));
 		$this->dontParseContent = $conf["dontParseContent"];
 		$cObj =t3lib_div::makeInstance("tslib_cObj");	// Initiate new cObj, because we're loading the data-array
+
+		$this->recordCount = $this->getRecordCount($pid);
+		$globalMarkerArray["###PREVNEXT###"] = $this->getPrevNext();
+
 		
 		$codes=t3lib_div::trimExplode(",", $config["code"]?$config["code"]:$conf["defaultCode"],1);
 		if (!count($codes))	$codes=array("");

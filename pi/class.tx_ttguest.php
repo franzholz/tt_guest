@@ -41,7 +41,7 @@
 
 
 require_once(PATH_tslib."class.tslib_pibase.php");
-require_once(t3lib_extMgm::extPath('tt_guest').'pi/class.recordnavigator.php');
+require_once(t3lib_extMgm::extPath('tt_guest').'pi/class.tx_ttguest_RecordNavigator.php');
 
 
 class tx_ttguest extends tslib_pibase {
@@ -269,7 +269,7 @@ class tx_ttguest extends tslib_pibase {
 	
 	function getPrevNext()
 	{
-		$nav = new RecordNavigator(
+		$nav = new tx_ttguest_RecordNavigator(
 			$this->recordCount, 
 			$_REQUEST['offset'], 
 			$this->conf['limit'], 

@@ -16,8 +16,7 @@ $RN->createPrevNext("previous", "next");
 echo($RN->getNavigator());
 
 */
-class tx_ttguest_RecordNavigator
-{
+class tx_ttguest_RecordNavigator {
 	var $queryCount;
 	var $offset;
 	var $limiter;
@@ -27,8 +26,7 @@ class tx_ttguest_RecordNavigator
 	var $cObj = null; // for making typo3 links
 
 	/* constructor */
-	function tx_ttguest_RecordNavigator($queryCount, $offset, $limiter, $scriptpath)
-	{ 
+	function tx_ttguest_RecordNavigator($queryCount, $offset, $limiter, $scriptpath) { 
 		$this->queryCount 	= $queryCount;
 		$this->offset 		= $offset;
 		$this->limiter		= $limiter;
@@ -38,18 +36,15 @@ class tx_ttguest_RecordNavigator
 	}
 	
 	/* create page # sequence */
-	function createSequence()
-	{
+	function createSequence() {
+	
 		$numPages = ceil($this->queryCount / $this->limiter);
 		$nextOffset = 0;
 		
 		/* if there are more records than currently counted, generate sequence */
-		if($this->queryCount > $this->limiter)
-		{		
-			for($i = 1; $i <= $numPages; $i++)
-			{
-				if($this->offset != $nextOffset)
-				{
+		if($this->queryCount > $this->limiter) {		
+			for($i = 1; $i <= $numPages; $i++) {
+				if($this->offset != $nextOffset) {
 					$this->seqStr .= '<li>'.$this->cObj->getTypoLink(
 						$i, 
 						$GLOBALS['TSFE']->id, 
@@ -57,8 +52,7 @@ class tx_ttguest_RecordNavigator
 						''
 					).'</li>';
 				}
-				else
-				{
+				else {
 					$this->seqStr .= '<li class="current">'.$i.'</li>';
 				}
 					
@@ -68,10 +62,8 @@ class tx_ttguest_RecordNavigator
 	}
 	
 	/* create previous/next links */
-	function createPrevNext($prevLabel, $nextLabel)
-	{
-		if((int) $this->offset != 0)
-		{
+	function createPrevNext($prevLabel, $nextLabel) {
+		if((int) $this->offset != 0) {
 			$prevOffset = $this->offset - $this->limiter;
 			
 			$this->seqStr = '<li class="prev">'.$this->cObj->getTypoLink(
@@ -80,8 +72,7 @@ class tx_ttguest_RecordNavigator
 				array('offset' => $prevOffset),
 				'').'</li>'.$this->seqStr;
 		}
-		if($this->queryCount > ($this->offset + $this->limiter))
-		{
+		if($this->queryCount > ($this->offset + $this->limiter)) {
 			$nextOffset = $this->offset + $this->limiter;
 			$this->seqStr .= '<li class="next">'.$this->cObj->getTypoLink(
 				$nextLabel,
@@ -92,8 +83,7 @@ class tx_ttguest_RecordNavigator
 	}
 	
 	/* return full navigation string */
-	function getNavigator()
-	{
+	function getNavigator() {
 		return '<ul class="prevnext">'.$this->seqStr.'</ul>';
 	}
 }

@@ -1,22 +1,22 @@
 <?php
 /***************************************************************
 *  Copyright notice
-*  
-*  (c) 1999-2004 Kasper Skaarhoj (kasper@typo3.com)
+*
+*  (c) 1999-2005 Kasper Skaarhoj (kasperYYYY@typo3.com)
 *  All rights reserved
 *
-*  This script is part of the TYPO3 project. The TYPO3 project is 
+*  This script is part of the TYPO3 project. The TYPO3 project is
 *  free software; you can redistribute it and/or modify
 *  it under the terms of the GNU General Public License as published by
 *  the Free Software Foundation; either version 2 of the License, or
 *  (at your option) any later version.
-* 
+*
 *  The GNU General Public License can be found at
 *  http://www.gnu.org/copyleft/gpl.html.
-*  A copy is found in the textfile GPL.txt and important notices to the license 
+*  A copy is found in the textfile GPL.txt and important notices to the license
 *  from the author is found in LICENSE.txt distributed with these scripts.
 *
-* 
+*
 *  This script is distributed in the hope that it will be useful,
 *  but WITHOUT ANY WARRANTY; without even the implied warranty of
 *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,9 +26,9 @@
 ***************************************************************/
 /**
  * guestLib.inc
- * 
+ *
  * Creates a guestbook/comment-list.
- * 
+ *
  * TypoScript config:
  * - See static_template "plugin.tt_guest"
  * - See TS_ref.pdf
@@ -36,7 +36,7 @@
  * Other resources:
  * 'guest_submit.inc' is used for submission of the guest book entries to the database. This is done through the FEData TypoScript object. See the static_template 'plugin.tt_guest' for an example of how to set this up.
  *
- * @author	Kasper Skårhøj <kasper@typo3.com>
+ * @author	Kasper Skï¿½hj <kasperYYYY@typo3.com>
  */
 
 
@@ -48,8 +48,8 @@ class tx_ttguest extends tslib_pibase {
 	var $cObj;		// The backReference to the mother cObj object set at call time
 
 	var $enableFields ="";		// The enablefields of the tt_board table.
-	var $dontParseContent=0;	
-	
+	var $dontParseContent=0;
+
 	var $orig_templateCode="";
 
 	/**
@@ -59,25 +59,25 @@ class tx_ttguest extends tslib_pibase {
 		$this->conf = $conf;
 
 		$content="";
-	
+
 		// *************************************
 		// *** getting configuration values:
 		// *************************************
 		$alternativeLayouts = intval($conf["alternatingLayouts"])>0 ? intval($conf["alternatingLayouts"]) : 2;
-			
+
 			// pid_list is the pid/list of pids from where to fetch the guest items.
 		$config["pid_list"] = trim($this->cObj->stdWrap($conf["pid_list"],$conf["pid_list."]));
 		$config["pid_list"] = $config["pid_list"] ? implode(t3lib_div::intExplode(",",$config["pid_list"]),",") : $GLOBALS["TSFE"]->id;
 		list($pid) = explode(",",$config["pid_list"]);
-	
+
 			// "CODE" decides what is rendered:
 		$config["code"] = $this->cObj->stdWrap($conf["code"],$conf["code."]);
-	
+
 			// template is read.
 		$this->orig_templateCode = $this->cObj->fileResource($conf["templateFile"]);
-	
 
-			// globally substituted markers, fonts and colors.	
+
+			// globally substituted markers, fonts and colors.
 		$splitMark = md5(microtime());
 		$globalMarkerArray=array();
 		list($globalMarkerArray["###GW1B###"],$globalMarkerArray["###GW1E###"]) = explode($splitMark,$this->cObj->stdWrap($splitMark,$conf["wrap1."]));
@@ -95,7 +95,7 @@ class tx_ttguest extends tslib_pibase {
 		if ($config["displayCurrentRecord"])	{
 			$config["code"]="GUESTBOOK";
 		}
-			
+
 
 		// *************************************
 		// *** doing the things...:
@@ -119,11 +119,11 @@ class tx_ttguest extends tslib_pibase {
 				break;
 				case "GUESTBOOK":
 					$lConf=$conf;
-				
+
 					if (!$lConf["subpartMarker"])	{
 						$lConf["subpartMarker"]="TEMPLATE_GUESTBOOK";
 					}
-	
+
 						// Getting template subpart from file.
 					$templateCode = $cObj->getSubpart($this->orig_templateCode, "###".$lConf["subpartMarker"]."###");
 					if ($templateCode)	{
@@ -133,7 +133,7 @@ class tx_ttguest extends tslib_pibase {
 							// Fetching the guest book item(s) to display:
 						if ($config["displayCurrentRecord"])	{
 							$recentPosts=array();
-							$recentPosts[] = $this->cObj->data;	
+							$recentPosts[] = $this->cObj->data;
 						} else {
 							$recentPosts = $this->getItems($pid);
 						}
@@ -158,7 +158,7 @@ class tx_ttguest extends tslib_pibase {
 							$c_post++;
 							$subpartContent.=$cObj->substituteMarkerArrayCached($out,$markerArray);
 						}
-						
+
 							// Total Substitution:
 						if ($lConf["requireRecords"] && !count($recentPosts))	{
 							$content.= "";
@@ -166,9 +166,9 @@ class tx_ttguest extends tslib_pibase {
 							$content.= $cObj->substituteSubpart($templateCode,"###CONTENT###",$subpartContent) ;
 						}
 					} else {
-						debug("No template code for the subpart maker ###".$lConf["subpartMarker"]."###"); 
+						debug("No template code for the subpart maker ###".$lConf["subpartMarker"]."###");
 					}
-			
+
 				break;
 				default:
 					$langKey = strtoupper($GLOBALS["TSFE"]->config["config"]["language"]);
@@ -187,7 +187,7 @@ class tx_ttguest extends tslib_pibase {
 		}
 		return $content;
 	}
-	
+
 	/**
 	 * Main guestbook function.
 	 */
@@ -215,7 +215,7 @@ class tx_ttguest extends tslib_pibase {
 	 * Main guestbook function.
 	 */
 	function getItems($pid)	{
-		
+
 		if(!isset($_REQUEST['offset']))
 		{
 			$offset = 0;
@@ -224,16 +224,16 @@ class tx_ttguest extends tslib_pibase {
 		{
 			$offset = (int) $_REQUEST['offset'];
 		}
-	
+
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'*', 
-			'tt_guest', 
-			'pid IN ('.$pid.')'.$this->enableFields, 
-			'', 
+			'*',
+			'tt_guest',
+			'pid IN ('.$pid.')'.$this->enableFields,
+			'',
 			'crdate DESC',
 			"{$offset}, {$this->conf['limit']}"
 		);
-		
+
 		$out = array();
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
 			$out[] = $row;
@@ -255,10 +255,10 @@ class tx_ttguest extends tslib_pibase {
 	function getRecordCount($pid)
 	{
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
-			'COUNT(*) AS thecount', 
-			'tt_guest', 
-			'pid IN ('.$pid.')'.$this->enableFields, 
-			'', 
+			'COUNT(*) AS thecount',
+			'tt_guest',
+			'pid IN ('.$pid.')'.$this->enableFields,
+			'',
 			'',
 			''
 		);
@@ -267,7 +267,7 @@ class tx_ttguest extends tslib_pibase {
 
 		return $thecount;
 	}
-	
+
 	function getPrevNext()
 	{
 		$nav = new tx_ttguest_RecordNavigator(

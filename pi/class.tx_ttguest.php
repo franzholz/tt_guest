@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2005 Kasper Skaarhoj (kasperYYYY@typo3.com)
+*  (c) 1999-2006 Kasper Skårhøj <kasperYYYY@typo3.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,27 +30,30 @@
  * Creates a guestbook/comment-list.
  *
  * TypoScript config:
- * - See static_template "plugin.tt_guest"
+ * - See static_template 'plugin.tt_guest'
  * - See TS_ref.pdf
  *
  * Other resources:
  * 'guest_submit.inc' is used for submission of the guest book entries to the database. This is done through the FEData TypoScript object. See the static_template 'plugin.tt_guest' for an example of how to set this up.
+ * 
+ * $Id$
  *
- * @author	Kasper Skï¿½hj <kasperYYYY@typo3.com>
+ * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
+ * @author	Franz Holzinger <kontakt@fholzinger.com>
  */
 
 
-require_once(PATH_tslib."class.tslib_pibase.php");
+require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(t3lib_extMgm::extPath('tt_guest').'pi/class.tx_ttguest_RecordNavigator.php');
 
 
 class tx_ttguest extends tslib_pibase {
 	var $cObj;		// The backReference to the mother cObj object set at call time
 
-	var $enableFields ="";		// The enablefields of the tt_board table.
+	var $enableFields ='';		// The enablefields of the tt_board table.
 	var $dontParseContent=0;
 
-	var $orig_templateCode="";
+	var $orig_templateCode='';
 
 	/**
 	 * Main guestbook function.
@@ -58,80 +61,79 @@ class tx_ttguest extends tslib_pibase {
 	function main_guestbook($content,$conf)	{
 		$this->conf = $conf;
 
-		$content="";
+		$content='';
 
 		// *************************************
 		// *** getting configuration values:
 		// *************************************
-		$alternativeLayouts = intval($conf["alternatingLayouts"])>0 ? intval($conf["alternatingLayouts"]) : 2;
+		$alternativeLayouts = intval($conf['alternatingLayouts'])>0 ? intval($conf['alternatingLayouts']) : 2;
 
 			// pid_list is the pid/list of pids from where to fetch the guest items.
-		$config["pid_list"] = trim($this->cObj->stdWrap($conf["pid_list"],$conf["pid_list."]));
-		$config["pid_list"] = $config["pid_list"] ? implode(t3lib_div::intExplode(",",$config["pid_list"]),",") : $GLOBALS["TSFE"]->id;
-		list($pid) = explode(",",$config["pid_list"]);
+		$config['pid_list'] = trim($this->cObj->stdWrap($conf['pid_list'],$conf['pid_list.']));
+		$config['pid_list'] = $config['pid_list'] ? implode(t3lib_div::intExplode(',',$config['pid_list']),',') : $GLOBALS['TSFE']->id;
+		list($pid) = explode(',',$config['pid_list']);
 
-			// "CODE" decides what is rendered:
-		$config["code"] = $this->cObj->stdWrap($conf["code"],$conf["code."]);
+			// 'CODE' decides what is rendered:
+		$config['code'] = $this->cObj->stdWrap($conf['code'],$conf['code.']);
 
 			// template is read.
-		$this->orig_templateCode = $this->cObj->fileResource($conf["templateFile"]);
+		$this->orig_templateCode = $this->cObj->fileResource($conf['templateFile']);
 
 
 			// globally substituted markers, fonts and colors.
 		$splitMark = md5(microtime());
 		$globalMarkerArray=array();
-		list($globalMarkerArray["###GW1B###"],$globalMarkerArray["###GW1E###"]) = explode($splitMark,$this->cObj->stdWrap($splitMark,$conf["wrap1."]));
-		list($globalMarkerArray["###GW2B###"],$globalMarkerArray["###GW2E###"]) = explode($splitMark,$this->cObj->stdWrap($splitMark,$conf["wrap2."]));
-		$globalMarkerArray["###GC1###"] = $this->cObj->stdWrap($conf["color1"],$conf["color1."]);
-		$globalMarkerArray["###GC2###"] = $this->cObj->stdWrap($conf["color2"],$conf["color2."]);
-		$globalMarkerArray["###GC3###"] = $this->cObj->stdWrap($conf["color3"],$conf["color3."]);
+		list($globalMarkerArray['###GW1B###'],$globalMarkerArray['###GW1E###']) = explode($splitMark,$this->cObj->stdWrap($splitMark,$conf['wrap1.']));
+		list($globalMarkerArray['###GW2B###'],$globalMarkerArray['###GW2E###']) = explode($splitMark,$this->cObj->stdWrap($splitMark,$conf['wrap2.']));
+		$globalMarkerArray['###GC1###'] = $this->cObj->stdWrap($conf['color1'],$conf['color1.']);
+		$globalMarkerArray['###GC2###'] = $this->cObj->stdWrap($conf['color2'],$conf['color2.']);
+		$globalMarkerArray['###GC3###'] = $this->cObj->stdWrap($conf['color3'],$conf['color3.']);
 
-
-			// Substitute Global Marker Array
-		$this->orig_templateCode= $this->cObj->substituteMarkerArray($this->orig_templateCode, $globalMarkerArray);
 
 			// If the current record should be displayed.
-		$config["displayCurrentRecord"] = $conf["displayCurrentRecord"];
-		if ($config["displayCurrentRecord"])	{
-			$config["code"]="GUESTBOOK";
+		$config['displayCurrentRecord'] = $conf['displayCurrentRecord'];
+		if ($config['displayCurrentRecord'])	{
+			$config['code']='GUESTBOOK';
 		}
 
 
 		// *************************************
 		// *** doing the things...:
 		// *************************************
-		$this->init($this->cObj->enableFields("tt_guest"));
-		$this->dontParseContent = $conf["dontParseContent"];
-		$cObj =t3lib_div::makeInstance("tslib_cObj");	// Initiate new cObj, because we're loading the data-array
-
+		$this->init($this->cObj->enableFields('tt_guest'));
+		$this->dontParseContent = $conf['dontParseContent'];
 		$this->recordCount = $this->getRecordCount($pid);
-		$globalMarkerArray["###PREVNEXT###"] = $this->getPrevNext();
+		$cObj =t3lib_div::makeInstance('tslib_cObj');	// Initiate new cObj, because we're loading the data-array
+		$globalMarkerArray['###PREVNEXT###'] = $this->getPrevNext();
+
+			// Substitute Global Marker Array
+		$this->orig_templateCode= $this->cObj->substituteMarkerArray($this->orig_templateCode, $globalMarkerArray);
 
 		
-		$codes=t3lib_div::trimExplode(",", $config["code"]?$config["code"]:$conf["defaultCode"],1);
-		if (!count($codes))	$codes=array("");
+		$codes=t3lib_div::trimExplode(',', $config['code']?$config['code']:$conf['defaultCode'],1);
+		if (!count($codes))	$codes=array('');
 		while(list(,$theCode)=each($codes))	{
 			$theCode = (string)strtoupper(trim($theCode));
 			switch($theCode)	{
-				case "POSTFORM":
-					$lConf = $conf["postform."];
+				case 'POSTFORM':
+					$lConf = $conf['postform.'];
 					$content.=$cObj->FORM($lConf);
 				break;
-				case "GUESTBOOK":
+				case 'GUESTBOOK':
 					$lConf=$conf;
 
-					if (!$lConf["subpartMarker"])	{
-						$lConf["subpartMarker"]="TEMPLATE_GUESTBOOK";
+					if (!$lConf['subpartMarker'])	{
+						$lConf['subpartMarker']='TEMPLATE_GUESTBOOK';
 					}
 
 						// Getting template subpart from file.
-					$templateCode = $cObj->getSubpart($this->orig_templateCode, "###".$lConf["subpartMarker"]."###");
+					$templateCode = $cObj->getSubpart($this->orig_templateCode, '###'.$lConf['subpartMarker'].'###');
 					if ($templateCode)	{
 							// Getting the specific parts of the template
-						$postHeader=$this->getLayouts($templateCode,$alternativeLayouts,"POST");
+						$postHeader=$this->getLayouts($templateCode,$alternativeLayouts,'POST');
 
 							// Fetching the guest book item(s) to display:
-						if ($config["displayCurrentRecord"])	{
+						if ($config['displayCurrentRecord'])	{
 							$recentPosts=array();
 							$recentPosts[] = $this->cObj->data;
 						} else {
@@ -140,19 +142,19 @@ class tx_ttguest extends tslib_pibase {
 							// Traverse the items and display them:
 						reset($recentPosts);
 						$c_post=0;
-						$subpartContent="";
+						$subpartContent='';
 						while(list(,$recentPost)=each($recentPosts))	{
 								// Passing data through stdWrap and into the markerArray
 							$cObj->start($recentPost);		// Set this->data to the current record tt_guest record.
 							$markerArray=array();
-							$markerArray["###POST_TITLE###"] = $cObj->stdWrap($this->formatStr($recentPost["title"]), $conf["title_stdWrap."]);
-							$markerArray["###POST_CONTENT###"] = $cObj->stdWrap($this->formatStr($recentPost["note"]), $conf["note_stdWrap."]);
-							$markerArray["###POST_AUTHOR###"] = $cObj->stdWrap($this->formatStr($recentPost["cr_name"]), $conf["author_stdWrap."]);
-							$markerArray["###POST_EMAIL###"] = $cObj->stdWrap($this->formatStr($recentPost["cr_email"]), $conf["email_stdWrap."]);
-							$markerArray["###POST_WWW###"] = $cObj->stdWrap($this->formatStr($recentPost["www"]), $conf["www_stdWrap."]);
-							$markerArray["###POST_DATE###"] = $cObj->stdWrap($recentPost["crdate"],$conf["date_stdWrap."]);
-							$markerArray["###POST_TIME###"] = $cObj->stdWrap($recentPost["crdate"],$conf["time_stdWrap."]);
-							$markerArray["###POST_AGE###"] = $cObj->stdWrap($recentPost["crdate"],$conf["age_stdWrap."]);
+							$markerArray['###POST_TITLE###'] = $cObj->stdWrap($this->formatStr($recentPost['title']), $conf['title_stdWrap.']);
+							$markerArray['###POST_CONTENT###'] = $cObj->stdWrap($this->formatStr($recentPost['note']), $conf['note_stdWrap.']);
+							$markerArray['###POST_AUTHOR###'] = $cObj->stdWrap($this->formatStr($recentPost['cr_name']), $conf['author_stdWrap.']);
+							$markerArray['###POST_EMAIL###'] = $cObj->stdWrap($this->formatStr($recentPost['cr_email']), $conf['email_stdWrap.']);
+							$markerArray['###POST_WWW###'] = $cObj->stdWrap($this->formatStr($recentPost['www']), $conf['www_stdWrap.']);
+							$markerArray['###POST_DATE###'] = $cObj->stdWrap($recentPost['crdate'],$conf['date_stdWrap.']);
+							$markerArray['###POST_TIME###'] = $cObj->stdWrap($recentPost['crdate'],$conf['time_stdWrap.']);
+							$markerArray['###POST_AGE###'] = $cObj->stdWrap($recentPost['crdate'],$conf['age_stdWrap.']);
 								// Substitute the markerArray in the proper template code (POST subparts, alternating)
 							$out=$postHeader[$c_post%count($postHeader)];
 							$c_post++;
@@ -160,27 +162,27 @@ class tx_ttguest extends tslib_pibase {
 						}
 
 							// Total Substitution:
-						if ($lConf["requireRecords"] && !count($recentPosts))	{
-							$content.= "";
+						if ($lConf['requireRecords'] && !count($recentPosts))	{
+							$content.= '';
 						} else {
-							$content.= $cObj->substituteSubpart($templateCode,"###CONTENT###",$subpartContent) ;
+							$content.= $cObj->substituteSubpart($templateCode,'###CONTENT###',$subpartContent) ;
 						}
 					} else {
-						debug("No template code for the subpart maker ###".$lConf["subpartMarker"]."###");
+						debug('No template code for the subpart maker ###'.$lConf['subpartMarker'].'###');
 					}
 
 				break;
 				default:
-					$langKey = strtoupper($GLOBALS["TSFE"]->config["config"]["language"]);
-					$helpTemplate = $this->cObj->fileResource("EXT:tt_guest/pi/guest_help.tmpl");
+					$langKey = strtoupper($GLOBALS['TSFE']->config['config']['language']);
+					$helpTemplate = $this->cObj->fileResource('EXT:tt_guest/pi/guest_help.tmpl');
 
 						// Get language version
-					$helpTemplate_lang="";
-					if ($langKey)	{$helpTemplate_lang = $this->cObj->getSubpart($helpTemplate,"###TEMPLATE_".$langKey."###");}
-					$helpTemplate = $helpTemplate_lang ? $helpTemplate_lang : $this->cObj->getSubpart($helpTemplate,"###TEMPLATE_DEFAULT###");
+					$helpTemplate_lang='';
+					if ($langKey)	{$helpTemplate_lang = $this->cObj->getSubpart($helpTemplate,'###TEMPLATE_'.$langKey.'###');}
+					$helpTemplate = $helpTemplate_lang ? $helpTemplate_lang : $this->cObj->getSubpart($helpTemplate,'###TEMPLATE_DEFAULT###');
 
 						// Markers and substitution:
-					$markerArray["###CODE###"] = $theCode;
+					$markerArray['###CODE###'] = $theCode;
 					$content.=$this->cObj->substituteMarkerArray($helpTemplate,$markerArray);
 				break;
 			}
@@ -201,9 +203,9 @@ class tx_ttguest extends tslib_pibase {
 	function getLayouts($templateCode,$alternativeLayouts,$marker)	{
 		$out=array();
 		for($a=0;$a<$alternativeLayouts;$a++)	{
-			$m= "###".$marker.($a?"_".$a:"")."###";
+			$m= '###'.$marker.($a?'_'.$a:'').'###';
 			if(strstr($templateCode,$m))	{
-				$out[]=$GLOBALS["TSFE"]->cObj->getSubpart($templateCode, $m);
+				$out[]=$GLOBALS['TSFE']->cObj->getSubpart($templateCode, $m);
 			} else {
 				break;
 			}
@@ -231,7 +233,7 @@ class tx_ttguest extends tslib_pibase {
 			'pid IN ('.$pid.')'.$this->enableFields,
 			'',
 			'crdate DESC',
-			"{$offset}, {$this->conf['limit']}"
+			$offset.', '.$this->conf['limit']
 		);
 
 		$out = array();
@@ -283,8 +285,8 @@ class tx_ttguest extends tslib_pibase {
 }
 
 
-if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/tt_guest/pi/class.tx_ttguest.php"])	{
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/tt_guest/pi/class.tx_ttguest.php"]);
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest.php'])	{
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest.php']);
 }
 
 ?>

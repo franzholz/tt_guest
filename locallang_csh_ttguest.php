@@ -5,16 +5,19 @@
 
 $LOCAL_LANG = Array (
 	'default' => Array (
-		'.description' => 'Built-in guestbook. ',
-		'.details' => 'This table is used by the default TypoScript guestbook available. All entries goes into this table and you can thus administer any guestbook through the backend.',
+		'.description' => 'Guestbook. ',
+		'.details' => 'This table is used by guestbook extensions. All entries goes into this table and you can thus administer any guestbook through the backend.',
 		'_.seeAlso' => 'tt_content:list_type',
 	),
 	'dk' => Array (
-		'.description' => 'Indbygget gæstebog',
+		'.description' => 'Gæstebog',
 		'.details' => 'Denne tabel bruges af standard gæstebogen based på TypoScript. Alle emner i gæstebogen findes i denne tabel og du kan således administrere gæstebogen gennem backenden.',
 		'_.seeAlso' => 'tt_content:list_type',
 	),
 	'de' => Array (
+		'.description' => 'Gästebuch. ',
+		'.details' => 'Diese Tabelle wird von Gästebuch Extensions verwendet. Alle Einträge kommen in diese Tabelle. Daher können Sie jedes Gästebuch über dieses Backend administrieren.',
+		'_.seeAlso' => 'tt_content:list_type',
 	),
 	'no' => Array (
 	),

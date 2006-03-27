@@ -34,7 +34,7 @@
  * - See TS_ref.pdf
  *
  * Other resources:
- * 'guest_submit.inc' is used for submission of the guest book entries to the database. This is done through the FEData TypoScript object. See the static_template 'plugin.tt_guest' for an example of how to set this up.
+ * 'guest_submit.inc' is used for submission of the guest book entries to the database. This is done through the FEData TypoScript object. See the file 'ext_typoscript_setup.txt' for an example of how to set this up.
  * 
  * $Id$
  *
@@ -48,6 +48,10 @@ require_once(t3lib_extMgm::extPath('tt_guest').'pi/class.tx_ttguest_RecordNaviga
 
 
 class tx_ttguest extends tslib_pibase {
+	var $prefixId = 'tx_ttguest';	// Same as class name
+	var $scriptRelPath = 'pi/class.tx_ttguest.php';	// Path to this script relative to the extension dir.
+	var $extKey = TT_GUEST_EXTkey;	// The extension key.
+
 	var $cObj;		// The backReference to the mother cObj object set at call time
 
 	var $enableFields ='';		// The enablefields of the tt_board table.
@@ -55,70 +59,30 @@ class tx_ttguest extends tslib_pibase {
 
 	var $orig_templateCode='';
 
+	var $config=array();				// updated configuration
+
+	var $pid_list;					// list of page ids
+
 	/**
 	 * Main guestbook function.
 	 */
 	function main_guestbook($content,$conf)	{
+		global $TSFE;
+		
 		$this->conf = $conf;
 
-		$content='';
-
-		// *************************************
-		// *** getting configuration values:
-		// *************************************
-		$alternativeLayouts = intval($conf['alternatingLayouts'])>0 ? intval($conf['alternatingLayouts']) : 2;
-
-			// pid_list is the pid/list of pids from where to fetch the guest items.
-		$config['pid_list'] = trim($this->cObj->stdWrap($conf['pid_list'],$conf['pid_list.']));
-		$config['pid_list'] = $config['pid_list'] ? implode(t3lib_div::intExplode(',',$config['pid_list']),',') : $GLOBALS['TSFE']->id;
-		list($pid) = explode(',',$config['pid_list']);
-
-			// 'CODE' decides what is rendered:
-		$config['code'] = $this->cObj->stdWrap($conf['code'],$conf['code.']);
-
-			// template is read.
-		$this->orig_templateCode = $this->cObj->fileResource($conf['templateFile']);
-
-
-			// globally substituted markers, fonts and colors.
-		$splitMark = md5(microtime());
-		$globalMarkerArray=array();
-		list($globalMarkerArray['###GW1B###'],$globalMarkerArray['###GW1E###']) = explode($splitMark,$this->cObj->stdWrap($splitMark,$conf['wrap1.']));
-		list($globalMarkerArray['###GW2B###'],$globalMarkerArray['###GW2E###']) = explode($splitMark,$this->cObj->stdWrap($splitMark,$conf['wrap2.']));
-		$globalMarkerArray['###GC1###'] = $this->cObj->stdWrap($conf['color1'],$conf['color1.']);
-		$globalMarkerArray['###GC2###'] = $this->cObj->stdWrap($conf['color2'],$conf['color2.']);
-		$globalMarkerArray['###GC3###'] = $this->cObj->stdWrap($conf['color3'],$conf['color3.']);
-
-
-			// If the current record should be displayed.
-		$config['displayCurrentRecord'] = $conf['displayCurrentRecord'];
-		if ($config['displayCurrentRecord'])	{
-			$config['code']='GUESTBOOK';
-		}
-
-
-		// *************************************
-		// *** doing the things...:
-		// *************************************
-		$this->init($this->cObj->enableFields('tt_guest'));
-		$this->dontParseContent = $conf['dontParseContent'];
+		$this->init ($content, $conf, $this->config);	
+		$cObj = t3lib_div::makeInstance('tslib_cObj');	// Initiate new cObj, because we're loading the data-array
+		list($pid) = t3lib_div::trimExplode(',',$this->pid_list);
 		$this->recordCount = $this->getRecordCount($pid);
-		$cObj =t3lib_div::makeInstance('tslib_cObj');	// Initiate new cObj, because we're loading the data-array
-		$globalMarkerArray['###PREVNEXT###'] = $this->getPrevNext();
-
-			// Substitute Global Marker Array
-		$this->orig_templateCode= $this->cObj->substituteMarkerArray($this->orig_templateCode, $globalMarkerArray);
-
 		
-		$codes=t3lib_div::trimExplode(',', $config['code']?$config['code']:$conf['defaultCode'],1);
+		$alternativeLayouts = intval($conf['alternatingLayouts'])>0 ? intval($conf['alternatingLayouts']) : 2;
+		$codes=t3lib_div::trimExplode(',', $this->config['code'],1);
 		if (!count($codes))	$codes=array('');
+
 		while(list(,$theCode)=each($codes))	{
 			$theCode = (string)strtoupper(trim($theCode));
 			switch($theCode)	{
-				case 'POSTFORM':
-					$lConf = $conf['postform.'];
-					$content.=$cObj->FORM($lConf);
-				break;
 				case 'GUESTBOOK':
 					$lConf=$conf;
 
@@ -172,6 +136,10 @@ class tx_ttguest extends tslib_pibase {
 					}
 
 				break;
+				case 'POSTFORM':
+					$lConf = $conf['postform.'];
+					$content.=$cObj->FORM($lConf);
+				break;
 				default:
 					$langKey = strtoupper($GLOBALS['TSFE']->config['config']['language']);
 					$helpTemplate = $this->cObj->fileResource('EXT:tt_guest/pi/guest_help.tmpl');
@@ -190,12 +158,75 @@ class tx_ttguest extends tslib_pibase {
 		return $content;
 	}
 
+
 	/**
-	 * Main guestbook function.
-	 */
-	function init($enableFields)	{
-		$this->enableFields = $enableFields;
+	 * does the initialization stuff
+	 *
+	 * @param		string		  content string
+	 * @param		string		  configuration array
+	 * @param		string		  modified configuration array
+	 * @return	  void
+ 	 */
+	function init (&$content,&$conf,&$config) {
+		global $TSFE;
+		
+			// pid_list is the pid/list of pids from where to fetch the guest items.
+		$tmp = trim($this->cObj->stdWrap($conf['pid_list'],$conf['pid_list.']));
+		// $config['pid_list'] = $config['pid_list'] ? implode(t3lib_div::intExplode(',',$config['pid_list']),',') : $TSFE->id;
+		
+		$pid_list = $config['pid_list'] = ($conf['pid_list'] ? $conf['pid_list'] :trim($this->cObj->stdWrap($conf['pid_list'],$conf['pid_list.'])));
+		$this->pid_list = ($pid_list ? $pid_list : $TSFE->id);
+
+			// template is read.
+		$this->orig_templateCode = $this->cObj->fileResource($conf['templateFile']);
+
+		// <Franz Holzinger added flexform support>
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms'] && t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
+		 		// FE BE library for flexform functions
+			require_once(PATH_BE_fh_library.'lib/class.tx_fhlibrary_flexform.php');
+				// check the flexform
+			$this->pi_initPIflexForm();
+			$config['code'] = tx_fhlibrary_flexform::getSetupOrFFvalue(
+				$this, 
+				$conf['code'], 
+				$conf['code.'],
+				$this->conf['defaultCode'], 
+				$this->cObj->data['pi_flexform'], 
+				'display_mode',
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms']
+			);
+		}else {
+				// 'CODE' decides what is rendered:
+			$config['code'] = $this->cObj->stdWrap($conf['code'],$conf['code.']);
+		}
+
+			// globally substituted markers, fonts and colors.
+		$splitMark = md5(microtime());
+		$globalMarkerArray=array();
+		list($globalMarkerArray['###GW1B###'],$globalMarkerArray['###GW1E###']) = explode($splitMark,$this->cObj->stdWrap($splitMark,$conf['wrap1.']));
+		list($globalMarkerArray['###GW2B###'],$globalMarkerArray['###GW2E###']) = explode($splitMark,$this->cObj->stdWrap($splitMark,$conf['wrap2.']));
+		$globalMarkerArray['###GC1###'] = $this->cObj->stdWrap($conf['color1'],$conf['color1.']);
+		$globalMarkerArray['###GC2###'] = $this->cObj->stdWrap($conf['color2'],$conf['color2.']);
+		$globalMarkerArray['###GC3###'] = $this->cObj->stdWrap($conf['color3'],$conf['color3.']);
+
+			// If the current record should be displayed.
+		$config['displayCurrentRecord'] = $conf['displayCurrentRecord'];
+		if ($config['displayCurrentRecord'])	{
+			$config['code']='GUESTBOOK';
+		}
+
+
+		// *************************************
+		// *** doing the things...:
+		// *************************************
+		$this->enableFields = $this->cObj->enableFields('tt_guest');
+		$this->dontParseContent = $conf['dontParseContent'];
+		$globalMarkerArray['###PREVNEXT###'] = $this->getPrevNext();
+
+			// Substitute Global Marker Array
+		$this->orig_templateCode= $this->cObj->substituteMarkerArray($this->orig_templateCode, $globalMarkerArray);		
 	}
+
 
 	/**
 	 * Main guestbook function.

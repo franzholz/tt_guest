@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2005 Kasper Skaarhoj (kasperYYYY@typo3.com)
+*  (c) 1999-2006 Kasper Skaarhoj (kasperYYYY@typo3.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,6 +26,8 @@
 ***************************************************************/
 /**
  * Class, containing function for adding an element to the content element wizard.
+ * 
+ * $Id$
  *
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
  */
@@ -69,7 +71,7 @@ class tx_ttguest_wizicon {
 
 			// Adding the item:
 		$wizardItems['plugins_ttguest'] = array(
-			'icon'=>t3lib_extMgm::extRelPath('tt_guest').'guestbook.gif',
+			'icon'=>PATH_BE_ttguest_rel.'guestbook.gif',
 			'title'=>$LANG->getLLL('plugins_title',$LL),
 			'description'=>$LANG->getLLL('plugins_description',$LL),
 			'params'=>'&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=3&defVals[tt_content][select_key]='.rawurlencode('GUESTBOOK, POSTFORM')
@@ -84,7 +86,7 @@ class tx_ttguest_wizicon {
 	 * @return	array		LOCAL_LANG array
 	 */
 	function includeLocalLang()	{
-		include(t3lib_extMgm::extPath('tt_guest').'locallang.php');
+		include(PATH_BE_ttguest.'locallang.php');
 		return $LOCAL_LANG;
 	}
 }

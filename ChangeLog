@@ -1,0 +1,6 @@
+2006-03-27 Franz Holzinger <franz@fholzinger.com>
+	* use flexforms
+2006-03-09 Franz Holzinger <franz@fholzinger.com>
+	* correct error with "###PREVNEXT### is not decoded"
+2004-07-21 Kasper Skårhøj <kasperYYYY@typo3.com>
+	* Initial CVS upload

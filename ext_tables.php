@@ -23,7 +23,7 @@ $TCA['tt_guest'] = Array (
 		'enablecolumns' => Array (
 			'disabled' => 'hidden'
 		),
-		'title' => 'LLL:EXT:'.TT_GUEST_EXTkey.'/locallang_tca.php:tt_guest',
+		'title' => 'LLL:EXT:'.TT_GUEST_EXTkey.'/locallang_tca.php:tt_content.list_type_pi',
 		'iconfile' => PATH_BE_ttguest_rel.'ext_icon.gif',
 		'dynamicConfigFile' => PATH_BE_ttguest.'tca.php'
 	)

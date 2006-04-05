@@ -17,6 +17,9 @@ $LOCAL_LANG = Array (
 		'pi' => 'Gæstebog',
 	),
 	'de' => Array (
+		'tt_content.pi_flexform.display_mode' => 'Anzeigetyp',
+		'tt_content.pi_flexform.display_mode.1' => 'Gästebuch Liste',
+		'tt_content.pi_flexform.display_mode.2' => 'Dateneingabe Formular',
 		'tt_content.list_type_pi' => 'Gästebuch',  
 		'tt_guest.cr_name' => 'Absender Name:',
 		'tt_guest.cr_email' => 'Absender Email:',

@@ -44,7 +44,7 @@
 
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
-require_once(t3lib_extMgm::extPath('tt_guest').'pi/class.tx_ttguest_RecordNavigator.php');
+require_once(PATH_BE_ttguest.'pi/class.tx_ttguest_RecordNavigator.php');
 
 
 class tx_ttguest extends tslib_pibase {
@@ -61,7 +61,22 @@ class tx_ttguest extends tslib_pibase {
 
 	var $config=array();				// updated configuration
 
-	var $pid_list;					// list of page ids
+	var $pid_list;			// list of page ids
+	var $recordCount; 		// number of records
+
+	/**
+	 * Class Constructor (true constructor)
+	 * Initializes $this->piVars if $this->prefixId is set to any value
+	 * Will also set $this->LLkey based on the config.language setting.
+	 *
+	 * @return	void
+	 */
+	function tslib_pibase()	{
+		global $TSFE;
+		
+		$TSFE->makeCacheHash();
+		parent::tslib_pibase();
+	}
 
 	/**
 	 * Main guestbook function.
@@ -73,8 +88,7 @@ class tx_ttguest extends tslib_pibase {
 
 		$this->init ($content, $conf, $this->config);	
 		$cObj = t3lib_div::makeInstance('tslib_cObj');	// Initiate new cObj, because we're loading the data-array
-		list($pid) = t3lib_div::trimExplode(',',$this->pid_list);
-		$this->recordCount = $this->getRecordCount($pid);
+		// list($pid) = t3lib_div::trimExplode(',',$this->pid_list);
 		
 		$alternativeLayouts = intval($conf['alternatingLayouts'])>0 ? intval($conf['alternatingLayouts']) : 2;
 		$codes=t3lib_div::trimExplode(',', $this->config['code'],1);
@@ -101,7 +115,7 @@ class tx_ttguest extends tslib_pibase {
 							$recentPosts=array();
 							$recentPosts[] = $this->cObj->data;
 						} else {
-							$recentPosts = $this->getItems($pid);
+							$recentPosts = $this->getItems($this->pid_list);
 						}
 							// Traverse the items and display them:
 						reset($recentPosts);
@@ -138,11 +152,26 @@ class tx_ttguest extends tslib_pibase {
 				break;
 				case 'POSTFORM':
 					$lConf = $conf['postform.'];
-					$content.=$cObj->FORM($lConf);
+					$tmp = $cObj->FORM($lConf);
+					$content.=$tmp;
 				break;
-				default:
-					$langKey = strtoupper($GLOBALS['TSFE']->config['config']['language']);
-					$helpTemplate = $this->cObj->fileResource('EXT:tt_guest/pi/guest_help.tmpl');
+				default:	// 'HELP'
+					$TSFE->set_no_cache();
+					$contentTmp = 'error';
+				break;
+			}
+			if ($contentTmp == 'error') {
+				if (t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey))	{
+					$content .= tx_fhlibrary_view::displayHelpPage(
+						$this,
+						$this->cObj->fileResource('EXT:'.TT_GUEST_EXTkey.'/pi/guest_help.tmpl'),
+						TT_GUEST_EXTkey,
+						$this->errorMessage
+					);
+					unset($this->errorMessage);
+				} else {
+					$langKey = strtoupper($TSFE->config['config']['language']);
+					$helpTemplate = $this->cObj->fileResource('EXT:'.TT_GUEST_EXTkey.'/pi/guest_help.tmpl');
 
 						// Get language version
 					$helpTemplate_lang='';
@@ -151,11 +180,16 @@ class tx_ttguest extends tslib_pibase {
 
 						// Markers and substitution:
 					$markerArray['###CODE###'] = $theCode;
-					$content.=$this->cObj->substituteMarkerArray($helpTemplate,$markerArray);
-				break;
-			}
+					$markerArray['###PATH###'] = PATH_BE_ttguest;
+					$content.=$this->cObj->substituteMarkerArray($helpTemplate,$markerArray);					
+				}
+				break; // while
+			}		
+
 		}
-		return $content;
+
+		$rc = $this->pi_wrapInBaseClass($content);
+		return $rc;
 	}
 
 
@@ -180,7 +214,6 @@ class tx_ttguest extends tslib_pibase {
 			// template is read.
 		$this->orig_templateCode = $this->cObj->fileResource($conf['templateFile']);
 
-		// <Franz Holzinger added flexform support>
 		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms'] && t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
 		 		// FE BE library for flexform functions
 			require_once(PATH_BE_fh_library.'lib/class.tx_fhlibrary_flexform.php');
@@ -221,6 +254,7 @@ class tx_ttguest extends tslib_pibase {
 		// *************************************
 		$this->enableFields = $this->cObj->enableFields('tt_guest');
 		$this->dontParseContent = $conf['dontParseContent'];
+		$this->recordCount = $this->getRecordCount($this->pid_list);
 		$globalMarkerArray['###PREVNEXT###'] = $this->getPrevNext();
 
 			// Substitute Global Marker Array
@@ -248,6 +282,7 @@ class tx_ttguest extends tslib_pibase {
 	 * Main guestbook function.
 	 */
 	function getItems($pid)	{
+		global $TYPO3_DB;
 
 		if(!isset($_REQUEST['offset']))
 		{
@@ -258,7 +293,7 @@ class tx_ttguest extends tslib_pibase {
 			$offset = (int) $_REQUEST['offset'];
 		}
 
-		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+		$res = $TYPO3_DB->exec_SELECTquery(
 			'*',
 			'tt_guest',
 			'pid IN ('.$pid.')'.$this->enableFields,
@@ -268,7 +303,7 @@ class tx_ttguest extends tslib_pibase {
 		);
 
 		$out = array();
-		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res))	{
+		while($row = $TYPO3_DB->sql_fetch_assoc($res))	{
 			$out[] = $row;
 		}
 		return $out;
@@ -296,7 +331,8 @@ class tx_ttguest extends tslib_pibase {
 			''
 		);
 
-		list($thecount) = mysql_fetch_row($res);
+		$row = mysql_fetch_row($res);
+		list($thecount) = $row;
 
 		return $thecount;
 	}

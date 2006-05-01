@@ -57,6 +57,7 @@ class tx_ttguest_RecordNavigator {
 	var $scriptPath;
 
 	var $cObj = null; // for making typo3 links
+	var $typoVersion; // TYPO3 version
 
 	/* constructor */
 	function tx_ttguest_RecordNavigator($queryCount, $offset, $limiter, $scriptpath) { 
@@ -66,6 +67,8 @@ class tx_ttguest_RecordNavigator {
 		$this->scriptPath 	= $scriptpath;
 
 		$this->cObj = new tslib_cObj();
+		$this->typoVersion = t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']);
+		
 	}
 	
 	/* create page # sequence */
@@ -73,45 +76,67 @@ class tx_ttguest_RecordNavigator {
 	
 		$numPages = ceil($this->queryCount / $this->limiter);
 		$nextOffset = 0;
-		
+
 		/* if there are more records than currently counted, generate sequence */
 		if($this->queryCount > $this->limiter) {		
 			for($i = 1; $i <= $numPages; $i++) {
 				if($this->offset != $nextOffset) {
-					$this->seqStr .= '<li>'.$this->cObj->getTypoLink(
-						$i, 
-						$GLOBALS['TSFE']->id, 
-						array('offset' => $nextOffset), 
-						''
-					).'</li>';
+					$this->seqStr .= $this->createOffsetLink($nextOffset, $i, '');
 				}
 				else {
 					$this->seqStr .= '<li class="current">'.$i.'</li>';
 				}
-					
 				$nextOffset += $this->limiter;
 			}
 		}
 	}
+
+	/* create offset link */	
+	function &createOffsetLink($newOffset, $label, $class)	{
+		global $TSFE;
+		
+		$pA = array();
+		if ($this->typoVersion >= 3008000)	{
+			$addQueryParams = '&offset='.$newOffset;
+			$pA = t3lib_div::cHashParams($addQueryParams.$TSFE->linkVars);
+			$pA['cHash'] = t3lib_div::shortMD5(serialize($pA));
+			unset($pA['encryptionKey']);
+		} else {
+			$pA= array('offset' => $newOffset);
+		}
+		
+		$rc = '<li'.($class ? 'class="'.$class.'"': '') . '>'.$this->cObj->getTypoLink(
+			$label,
+			$TSFE->id,
+			$pA,
+			'').'</li>';
+
+		return $rc;
+	}
 	
 	/* create previous/next links */
 	function createPrevNext($prevLabel, $nextLabel) {
+
 		if((int) $this->offset != 0) {
-			$prevOffset = $this->offset - $this->limiter;
-			
-			$this->seqStr = '<li class="prev">'.$this->cObj->getTypoLink(
-				$prevLabel,
-				$GLOBALS['TSFE']->id,
-				array('offset' => $prevOffset),
-				'').'</li>'.$this->seqStr;
+//			$prevOffset = $this->offset - $this->limiter;
+//			
+//			$this->seqStr = '<li class="prev">'.$this->cObj->getTypoLink(
+//				$prevLabel,
+//				$GLOBALS['TSFE']->id,
+//				array('offset' => $prevOffset),
+//				'').'</li>'.$this->seqStr;
+
+			$this->seqStr = $this->createOffsetLink($this->offset - $this->limiter, $prevLabel, 'prev').$this->seqStr;
 		}
 		if($this->queryCount > ($this->offset + $this->limiter)) {
-			$nextOffset = $this->offset + $this->limiter;
-			$this->seqStr .= '<li class="next">'.$this->cObj->getTypoLink(
-				$nextLabel,
-				$GLOBALS['TSFE']->id,
-				array('offset' => $nextOffset),
-				'').'</li>';
+//			$nextOffset = $this->offset + $this->limiter;
+//			$this->seqStr .= '<li class="next">'.$this->cObj->getTypoLink(
+//				$nextLabel,
+//				$GLOBALS['TSFE']->id,
+//				array('offset' => $nextOffset),
+//				'').'</li>';
+
+			$this->seqStr = $this->createOffsetLink($this->offset + $this->limiter, $nextLabel, 'next').$this->seqStr;
 		}
 	}
 	

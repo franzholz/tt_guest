@@ -33,7 +33,7 @@ plugin.tt_guest {
   pid_list.field = pages
   code.field = select_key
   
-  limit = 12
+  limit = 8	
   nextLabel = next
   previousLabel = previous
   

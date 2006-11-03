@@ -86,6 +86,7 @@ class tx_ttguest_wizicon {
 	 * @return	array		LOCAL_LANG array
 	 */
 	function includeLocalLang()	{
+		$LOCAL_LANG = '';
 		include(PATH_BE_ttguest.'locallang.php');
 		return $LOCAL_LANG;
 	}

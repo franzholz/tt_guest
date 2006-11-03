@@ -1,6 +1,9 @@
 <?php
 if (!defined ('TYPO3_MODE')) 	die ('Access denied.');
 
+t3lib_extMgm::addStaticFile(TT_GUEST_EXTkey, 'static/css_style/', 'Guestbook CSS Style');
+t3lib_extMgm::addStaticFile(TT_GUEST_EXTkey, 'static/old_style/', 'Guestbook Old Style');
+
 t3lib_div::loadTCA('tt_content');
 if ($TYPO3_CONF_VARS['EXTCONF'][TT_GUEST_EXTkey]['useFlexforms']==1) {
 	$TCA['tt_content']['types']['list']['subtypes_excludelist']['3']='layout,select_key';

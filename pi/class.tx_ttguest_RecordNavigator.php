@@ -118,24 +118,9 @@ class tx_ttguest_RecordNavigator {
 	function createPrevNext($prevLabel, $nextLabel) {
 
 		if((int) $this->offset != 0) {
-//			$prevOffset = $this->offset - $this->limiter;
-//			
-//			$this->seqStr = '<li class="prev">'.$this->cObj->getTypoLink(
-//				$prevLabel,
-//				$GLOBALS['TSFE']->id,
-//				array('offset' => $prevOffset),
-//				'').'</li>'.$this->seqStr;
-
 			$this->seqStr = $this->createOffsetLink($this->offset - $this->limiter, $prevLabel, 'prev').$this->seqStr;
 		}
 		if($this->queryCount > ($this->offset + $this->limiter)) {
-//			$nextOffset = $this->offset + $this->limiter;
-//			$this->seqStr .= '<li class="next">'.$this->cObj->getTypoLink(
-//				$nextLabel,
-//				$GLOBALS['TSFE']->id,
-//				array('offset' => $nextOffset),
-//				'').'</li>';
-
 			$this->seqStr = $this->createOffsetLink($this->offset + $this->limiter, $nextLabel, 'next').$this->seqStr;
 		}
 	}

@@ -81,7 +81,7 @@ class tx_ttguest extends tslib_pibase {
 	/**
 	 * Main guestbook function.
 	 */
-	function main_guestbook($content,$conf)	{
+	function main($content,$conf)	{
 		global $TSFE;
 		
 		$this->conf = $conf;

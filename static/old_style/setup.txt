@@ -7,6 +7,8 @@ FEData.tt_guest >
 FEData.tt_guest {
   processScript = EXT:tt_guest/pi/guest_submit.inc
   processScript.notifyEmail = {$plugin.tt_guest.notifyEmail}
+  processScript.emailCheck = {$plugin.tt_guest.emailCheck}
+  processScript.spamWords = {$plugin.tt_guest.spamWords}
   default {
     hidden = 0
   }
@@ -27,7 +29,7 @@ FEData.tt_guest {
 plugin.tt_guest >
 plugin.tt_guest = USER
 plugin.tt_guest {
-  userFunc = tx_ttguest->main_guestbook
+  userFunc = tx_ttguest->main
 
   templateFile = {$plugin.tt_guest.file.templateFile}
   pid_list.field = pages

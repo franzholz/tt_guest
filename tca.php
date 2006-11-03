@@ -7,7 +7,7 @@
 $TCA['tt_guest'] = Array (
 	'ctrl' => $TCA['tt_guest']['ctrl'],
 	'interface' => Array (
-		'showRecordFieldList' => 'title,cr_name,cr_email,note,www,hidden'
+		'showRecordFieldList' => 'title,cr_name,cr_email,note,www,cr_ip,hidden'
 	),
 	'columns' => Array (	
 		'title' => Array (
@@ -54,6 +54,15 @@ $TCA['tt_guest'] = Array (
 				'max' => '256'
 			)
 		),
+		'cr_ip' => Array (
+			'exclude' => 1,
+			'label' => 'LLL:EXT:tt_guest/locallang_tca.php:tt_guest.cr_ip',
+			'config' => Array (
+				'type' => 'input',
+				'size' => '15',
+				'max' => '15',
+			)
+		),
 		'hidden' => Array (
 			'exclude' => 1,	
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
@@ -64,7 +73,7 @@ $TCA['tt_guest'] = Array (
 		)
 	),
 	'types' => Array (	
-		'0' => Array('showitem' => 'hidden;;;;1-1-1, title;;;;3-3-3, note, cr_name, cr_email, www')
+		'0' => Array('showitem' => 'hidden;;;;1-1-1, title;;;;3-3-3, note, cr_name, cr_email, www, cr_ip')
 	)
 );
 ?>

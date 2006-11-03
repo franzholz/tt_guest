@@ -13,6 +13,7 @@ CREATE TABLE tt_guest (
   cr_name varchar(80) DEFAULT '' NOT NULL,
   cr_email varchar(80) DEFAULT '' NOT NULL,
   www tinytext NOT NULL,
+  cr_ip varchar(15) DEFAULT '' NOT NULL,
   doublePostCheck int(11) DEFAULT '0' NOT NULL,
   PRIMARY KEY (uid),
   KEY parent (pid)

@@ -30,7 +30,7 @@
  * .notifyEmail =	email address that should be notified of submissions.
  * See TSref document / FEDATA section for details on how to use this script.
  * The static template 'plugin.tt_guest' provides a working example of configuration.
- * $Id$ *
+ * $Id$*
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
  * @author	Nicolas Liaudat <mailing (at) pompiers-chatel.ch>
  */
@@ -41,13 +41,32 @@ if (is_object($this))	{
 	$email = $this->newData['tt_guest']['NEW']['cr_email'];
 	if (!$conf['emailCheck'] || checkEmail($email)) { // Added 02.06.2006 Nicolas Liaudat [mailing (at) pompiers-chatel.ch]
 		if (is_array($this->newData['tt_guest']['NEW']))	{
+
 			$spamArray = t3lib_div::trimExplode(',',$conf['spamWords']);
 			$bSpamFound = false;
-			$message = strtolower($this->newData['tt_guest']['NEW']['note']);
-			foreach ($spamArray as $k => $word)	{
-				$wordL = strtolower($word);
-				if ($wordL && strpos($message, $wordL) !== false)	{
-					$bSpamFound = true;
+			$internalFieldArray = array('hidden','pid','doublePostCheck');
+
+			foreach ($this->newData['tt_guest']['NEW'] as $field => $value)	{
+				if (!in_array($field, $internalFieldArray))	{
+					if (version_compare(phpversion(), '5.0.0', '>='))	{
+						foreach ($spamArray as $k => $word)	{
+							if ($word && stripos($value, $word) !== false)	{
+								$bSpamFound = true;
+								break;
+							}
+						}
+					} else {
+						foreach ($spamArray as $k => $word)	{
+							$lWord = strtolower($word);
+							$lValue = strtolower($value);
+							if ($lWord && strpos($lValue, $lWord) !== false)	{
+								$bSpamFound = true;
+								break;
+							}							
+						}
+					}
+				}
+				if ($bSpamFound)	{
 					break;
 				}
 			}
@@ -83,34 +102,34 @@ if (is_object($this))	{
 }
 
 
-	// Added from Nicolas Liaudat
-	function checkEmail($email)	{
-	
-		if (!ereg('^[^@]{1,64}@[^@]{1,255}$', $email)) {
-			// Email invalid because wrong number of characters in one section, or wrong number of @ symbols.
-			return false;
-		}
-		
-		// gets domain name
-		list($username,$domain)=split('@',$email);
-		// checks for if MX records in the DNS
-		$mxhosts = array();
-		if(!getmxrr($domain, $mxhosts))	{
-			// no mx records, ok to check domain
-			if (fsockopen($domain,25,$errno,$errstr,30))	{
-				return true;
-			} else {
-				return false;
-			}
-		} else {
-			// mx records found
-			foreach ($mxhosts as $host)	{
-				if (fsockopen($host,25,$errno,$errstr,30))	{
-					return true;
-				}
-			}
-			return false;
-		}
+// Added from Nicolas Liaudat
+function checkEmail($email)	{
+
+	if (!ereg('^[^@]{1,64}@[^@]{1,255}$', $email)) {
+		// Email invalid because wrong number of characters in one section, or wrong number of @ symbols.
+		return false;
 	}
+	
+	// gets domain name
+	list($username,$domain)=split('@',$email);
+	// checks for if MX records in the DNS
+	$mxhosts = array();
+	if(!getmxrr($domain, $mxhosts))	{
+		// no mx records, ok to check domain
+		if (@fsockopen($domain,25,$errno,$errstr,30))	{
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		// mx records found
+		foreach ($mxhosts as $host)	{
+			if (@fsockopen($host,25,$errno,$errstr,30))	{
+				return true;
+			}
+		}
+		return false;
+	}
+}
 
 ?>

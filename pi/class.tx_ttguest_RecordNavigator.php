@@ -105,7 +105,7 @@ class tx_ttguest_RecordNavigator {
 			$pA= array('offset' => $newOffset);
 		}
 		
-		$rc = '<li'.($class ? 'class="'.$class.'"': '') . '>'.$this->cObj->getTypoLink(
+		$rc = '<li'.($class ? ' class="'.$class.'"': '') . '>'.$this->cObj->getTypoLink(
 			$label,
 			$TSFE->id,
 			$pA,
@@ -121,7 +121,7 @@ class tx_ttguest_RecordNavigator {
 			$this->seqStr = $this->createOffsetLink($this->offset - $this->limiter, $prevLabel, 'prev').$this->seqStr;
 		}
 		if($this->queryCount > ($this->offset + $this->limiter)) {
-			$this->seqStr = $this->createOffsetLink($this->offset + $this->limiter, $nextLabel, 'next').$this->seqStr;
+			$this->seqStr = $this->seqStr.$this->createOffsetLink($this->offset + $this->limiter, $nextLabel, 'next');
 		}
 	}
 	

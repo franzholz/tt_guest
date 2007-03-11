@@ -1,5 +1,6 @@
 2007-03-11 Franz Holzinger <franz@fholzinger.com>
 	* fix bug in spam filter: ignore the case of characters
+	* double post check must be unsigned
 
 2006-11-03 Franz Holzinger <franz@fholzinger.com>
 	* use filter with spam words

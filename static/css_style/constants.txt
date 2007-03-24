@@ -21,5 +21,5 @@ plugin.tt_guest {
   color3 = #333333
   
     # cat=plugin.guestbook/spam; type=text; label= Spam words: Comma separated list of spam words. No message contaning one of these words will be stored.
-  spamWords = cialis, viagra, 0zu.tw, tramadol, phentermine, levitra, freeforen, kostenloses-forum, forum-on
+  spamWords = cialis, viagra, ROLEX, 0zu.tw, tramadol, phentermine, levitra, freeforen, kostenloses-forum, forum-on, fwef243, hk.pl, unlv.edu, iespana.es, ijijiji.com, elymdc.com, manx.com, qecn.com, cjxhn.com, skracaj.pl, fory.pl, michat.cl, spbgu.ru, dreipage.de, sistcma.org, liberiv553.org, fucking, free.of.pl, teen-girls, masturbating, lesbian, er9rori10.org, meranio68.org, cedarville.edu, sanzkdni59.org, flbuy.net, catanz1qaro.org, guestbook.at, yo24.pl, wovqmen12.org, doctorp.org, stpbudi24.org, ravennzna.org, forumbolt.com, bofnus23.org, wovqmen12.org, paradistc.org, word6.org, 706596.com, bugs.python.org, 0ep.net, snaw23.org, spod.cx, tinysite.info, 3x3.pl, easyfreeforum.com, blog.hr, myblogwiki.com, xfreeforum.com, freepowerboards.com, bofnus23.org, ovp.pl, jo.pl, fanforum.cc, bloguitos.com, Good site
 }

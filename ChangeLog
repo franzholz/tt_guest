@@ -1,3 +1,7 @@
+2007-06-25 Franz Holzinger <franz@fholzinger.com>
+	* use texts in pi/locallang.xml instead of former TYPO3 3.5 ts_language_... extensions
+	* fix bug with not included fh_library
+
 2007-03-24 Franz Holzinger <franz@fholzinger.com>
 	* more spam words
 
@@ -18,5 +22,5 @@
 2006-03-09 Franz Holzinger <franz@fholzinger.com>
 	* correct error with "###PREVNEXT### is not decoded"
 
-2004-07-21 Kasper Skårhøj <kasperYYYY@typo3.com>
+2004-07-21 Kasper Skï¿½rhï¿½j <kasperYYYY@typo3.com>
 	* Initial CVS upload

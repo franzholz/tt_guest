@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2006 Kasper Skårhøj <kasperYYYY@typo3.com>
+*  (c) 1999-2007 Kasper SkÃ¥rhÃ¸j <kasperYYYY@typo3.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -38,7 +38,7 @@
  * 
  * $Id$
  *
- * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
+ * @author	Kasper SkÃ¥rhÃ¸j <kasperYYYY@typo3.com>
  * @author	Franz Holzinger <kontakt@fholzinger.com>
  */
 
@@ -143,7 +143,11 @@ class tx_ttguest extends tslib_pibase {
 						if ($lConf['requireRecords'] && !count($recentPosts))	{
 							$content.= '';
 						} else {
-							$content.= $cObj->substituteSubpart($templateCode,'###CONTENT###',$subpartContent) ;
+							$subpartArray = array();
+							$subpartArray['###CONTENT###'] = $subpartContent;
+							$markerArray = array();
+							$markerArray['###COMMENTS###'] = $this->pi_getLL('comments');
+							$content.= $cObj->substituteMarkerArrayCached($templateCode,$markerArray,$subpartArray) ;
 						}
 					} else {
 						debug('No template code for the subpart maker ###'.$lConf['subpartMarker'].'###');
@@ -152,6 +156,26 @@ class tx_ttguest extends tslib_pibase {
 				break;
 				case 'POSTFORM':
 					$lConf = $conf['postform.'];
+					$setupArray = array('10' => 'title', '20' => 'note', '30' => 'cr_name', '40' => 'cr_email', '50' => 'www', '60' => 'post');
+
+					foreach ($setupArray as $k => $type)	{
+						if ($k == '60')	{
+							$field = 'value';
+						} else {
+							$field = 'label';
+						}
+						if (is_array($lConf['dataArray.'][$k.'.']))	{
+							if (
+								(!$this->LLkey || $this->LLkey=='en') && !$lConf['dataArray.'][$k.'.'][$field] || 
+								($this->LLkey!='en' && 
+									!is_array($lConf['dataArray.'][$k.'.'][$field.'.']) ||  !is_array($lConf['dataArray.'][$k.'.'][$field.'.']['lang.']) || !is_array($lConf['dataArray.'][$k.'.'][$field.'.']['lang.'][$this->LLkey.'.'])
+								)
+							) {
+								$lConf['dataArray.'][$k.'.'][$field] = $this->pi_getLL($type);
+							}
+						}
+					}
+
 					$tmp = $cObj->FORM($lConf);
 					$content.=$tmp;
 				break;
@@ -162,6 +186,7 @@ class tx_ttguest extends tslib_pibase {
 			}
 			if ($contentTmp == 'error') {
 				if (t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey))	{
+					include_once(PATH_BE_fh_library.'/lib/class.tx_fhlibrary_view.php');
 					$content .= tx_fhlibrary_view::displayHelpPage(
 						$this,
 						$this->cObj->fileResource('EXT:'.TT_GUEST_EXTkey.'/pi/guest_help.tmpl'),
@@ -181,7 +206,7 @@ class tx_ttguest extends tslib_pibase {
 						// Markers and substitution:
 					$markerArray['###CODE###'] = $theCode;
 					$markerArray['###PATH###'] = PATH_BE_ttguest;
-					$content.=$this->cObj->substituteMarkerArray($helpTemplate,$markerArray);					
+					$content.=$this->cObj->substituteMarkerArray($helpTemplate,$markerArray);
 				}
 				break; // while
 			}		
@@ -228,9 +253,16 @@ class tx_ttguest extends tslib_pibase {
 				'display_mode',
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms']
 			);
-		}else {
+		} else {
 				// 'CODE' decides what is rendered:
 			$config['code'] = $this->cObj->stdWrap($conf['code'],$conf['code.']);
+		}
+
+
+		if (t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
+		 		// FE BE library for language functions
+			include_once(PATH_BE_fh_library.'lib/class.tx_fhlibrary_language.php');
+			tx_fhlibrary_language::pi_loadLL($this,'EXT:'.$this->extKey.'/pi/locallang.xml');
 		}
 
 			// globally substituted markers, fonts and colors.
@@ -320,8 +352,7 @@ class tx_ttguest extends tslib_pibase {
 		}
 	}
 
-	function getRecordCount($pid)
-	{
+	function getRecordCount($pid)	{
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'COUNT(*) AS thecount',
 			'tt_guest',
@@ -337,8 +368,7 @@ class tx_ttguest extends tslib_pibase {
 		return $thecount;
 	}
 
-	function getPrevNext()
-	{
+	function getPrevNext()	{
 		$nav = new tx_ttguest_RecordNavigator(
 			$this->recordCount, 
 			$_REQUEST['offset'], 
@@ -346,8 +376,20 @@ class tx_ttguest extends tslib_pibase {
 			'?pid='.$GLOBALS['TSFE']->id
 		);
 		$nav->createSequence();
-		$nav->createPrevNext($this->conf['previousLabel'], $this->conf['nextLabel']);
-		return $nav->getNavigator();
+
+		$setupArray = array(0 => 'previousLabel', 1 => 'nextLabel');
+		$labelArray =  array();
+		foreach ($setupArray as $k => $labelKey)	{
+			if ($this->conf[$labelKey]) {
+				$labelArray[$k] = $this->conf[$labelKey];
+			} else {
+				$labelArray[$k] = $this->pi_getLL($labelKey);
+			}
+		}
+		$previousLabel = $this->conf['previousLabel'];
+		$nav->createPrevNext($labelArray[0], $labelArray[1]);
+		$rc = $nav->getNavigator();
+		return $rc;
 	}
 }
 

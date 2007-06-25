@@ -34,18 +34,16 @@ plugin.tt_guest {
   templateFile = {$plugin.tt_guest.file.templateFile}
   pid_list.field = pages
   code.field = select_key
-  
+
   limit = 8	
-  nextLabel = next
-  previousLabel = previous
-  
+
   # Global wraps
   wrap1.wrap = {$plugin.tt_guest.wrap1}
   wrap2.wrap = {$plugin.tt_guest.wrap2}
   color1.wrap = {$plugin.tt_guest.color1}
   color2.wrap = {$plugin.tt_guest.color2}
   color3.wrap = {$plugin.tt_guest.color3}
-  
+
   # Change/add to format the content:
   age_stdWrap.age = 1
   date_stdWrap.strftime= %e-%m-%y

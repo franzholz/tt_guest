@@ -31,6 +31,7 @@
  * See TSref document / FEDATA section for details on how to use this script.
  * The static template 'plugin.tt_guest' provides a working example of configuration.
  * $Id$*
+ *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
  * @author	Nicolas Liaudat <mailing (at) pompiers-chatel.ch>
  */

@@ -52,17 +52,16 @@ class tx_ttguest extends tslib_pibase {
 	var $scriptRelPath = 'pi/class.tx_ttguest.php';	// Path to this script relative to the extension dir.
 	var $extKey = TT_GUEST_EXTkey;	// The extension key.
 
-	var $cObj;		// The backReference to the mother cObj object set at call time
+	var $cObj;			// The backReference to the mother cObj object set at call time
 
-	var $enableFields ='';		// The enablefields of the tt_board table.
+	var $enableFields ='';		// The enablefields of the tt_guest table.
 	var $dontParseContent=0;
-
 	var $orig_templateCode='';
-
-	var $config=array();				// updated configuration
+	var $config=array();		// updated configuration
 
 	var $pid_list;			// list of page ids
 	var $recordCount; 		// number of records
+	var $freeCap;
 
 	/**
 	 * Class Constructor (true constructor)
@@ -73,7 +72,7 @@ class tx_ttguest extends tslib_pibase {
 	 */
 	function tslib_pibase()	{
 		global $TSFE;
-		
+
 		$TSFE->makeCacheHash();
 		parent::tslib_pibase();
 	}
@@ -89,7 +88,7 @@ class tx_ttguest extends tslib_pibase {
 		$this->init ($content, $conf, $this->config);	
 		$cObj = t3lib_div::makeInstance('tslib_cObj');	// Initiate new cObj, because we're loading the data-array
 		// list($pid) = t3lib_div::trimExplode(',',$this->pid_list);
-		
+
 		$alternativeLayouts = intval($conf['alternatingLayouts'])>0 ? intval($conf['alternatingLayouts']) : 2;
 		$codes=t3lib_div::trimExplode(',', $this->config['code'],1);
 		if (!count($codes))	$codes=array('');
@@ -175,8 +174,16 @@ class tx_ttguest extends tslib_pibase {
 							}
 						}
 					}
+					if (is_object($this->freeCap))	{
+						$freecapMarker = $this->freeCap->makeCaptcha();
+						$lConf['dataArray.']['55.'] = array(
+							'label' => $freecapMarker['###SR_FREECAP_IMAGE###'] . '<br>' . $freecapMarker['###SR_FREECAP_NOTICE###']. '<br>' . $freecapMarker['###SR_FREECAP_CANT_READ###'],
+							'type' => '*data[tt_guest][NEW][captcha]=input,60'
+						);
+					}
 
 					$tmp = $cObj->FORM($lConf);
+
 					$content.=$tmp;
 				break;
 				default:	// 'HELP'
@@ -280,7 +287,6 @@ class tx_ttguest extends tslib_pibase {
 			$config['code']='GUESTBOOK';
 		}
 
-
 		// *************************************
 		// *** doing the things...:
 		// *************************************
@@ -290,7 +296,11 @@ class tx_ttguest extends tslib_pibase {
 		$globalMarkerArray['###PREVNEXT###'] = $this->getPrevNext();
 
 			// Substitute Global Marker Array
-		$this->orig_templateCode= $this->cObj->substituteMarkerArray($this->orig_templateCode, $globalMarkerArray);		
+		$this->orig_templateCode= $this->cObj->substituteMarkerArray($this->orig_templateCode, $globalMarkerArray);
+		if ($this->conf['captcha'] == 'freecap' && t3lib_extMgm::isLoaded('sr_freecap') ) {
+			require_once(t3lib_extMgm::extPath('sr_freecap').'pi2/class.tx_srfreecap_pi2.php');
+			$this->freeCap = &t3lib_div::getUserObj('&tx_srfreecap_pi2');
+		}
 	}
 
 

@@ -1,3 +1,6 @@
+2007-10-17 Franz Holzinger <franz@fholzinger.com>
+	* use sr_freecap for captcha
+
 2007-06-25 Franz Holzinger <franz@fholzinger.com>
 	* use texts in pi/locallang.xml instead of former TYPO3 3.5 ts_language_... extensions
 	* fix bug with not included fh_library

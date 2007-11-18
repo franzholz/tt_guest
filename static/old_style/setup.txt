@@ -1,3 +1,9 @@
+##
+## @package TYPO3
+## @subpackage tt_guest
+## @version $Id$
+##
+
 ## Includes the guestLib:
 includeLibs.ts_guest = EXT:tt_guest/pi/class.tx_ttguest.php
 

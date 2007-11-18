@@ -1,3 +1,9 @@
+##
+## @package TYPO3
+## @subpackage tt_guest
+## @version $Id$
+##
+
 ## Includes the guestLib:
 includeLibs.ts_guest = EXT:tt_guest/pi/class.tx_ttguest.php
 
@@ -36,7 +42,7 @@ plugin.tt_guest {
   templateFile = {$plugin.tt_guest.file.templateFile}
   pid_list.field = pages
   code.field = select_key
-  captcha = {$plugin.tt_board.captcha}
+  captcha = {$plugin.tt_guest.captcha}
 
   limit = 8	
 

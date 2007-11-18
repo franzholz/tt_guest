@@ -51,14 +51,11 @@ class tx_ttguest extends tslib_pibase {
 	var $prefixId = 'tx_ttguest';	// Same as class name
 	var $scriptRelPath = 'pi/class.tx_ttguest.php';	// Path to this script relative to the extension dir.
 	var $extKey = TT_GUEST_EXTkey;	// The extension key.
-
 	var $cObj;			// The backReference to the mother cObj object set at call time
-
 	var $enableFields ='';		// The enablefields of the tt_guest table.
 	var $dontParseContent=0;
 	var $orig_templateCode='';
 	var $config=array();		// updated configuration
-
 	var $pid_list;			// list of page ids
 	var $recordCount; 		// number of records
 	var $freeCap;
@@ -93,7 +90,7 @@ class tx_ttguest extends tslib_pibase {
 		$codes=t3lib_div::trimExplode(',', $this->config['code'],1);
 		if (!count($codes))	$codes=array('');
 
-		while(list(,$theCode)=each($codes))	{
+		foreach($codes as $theCode)	{
 			$theCode = (string)strtoupper(trim($theCode));
 			switch($theCode)	{
 				case 'GUESTBOOK':
@@ -120,7 +117,7 @@ class tx_ttguest extends tslib_pibase {
 						reset($recentPosts);
 						$c_post=0;
 						$subpartContent='';
-						while(list(,$recentPost)=each($recentPosts))	{
+						foreach($recentPosts as $recentPost)	{
 								// Passing data through stdWrap and into the markerArray
 							$cObj->start($recentPost);		// Set this->data to the current record tt_guest record.
 							$markerArray=array();
@@ -181,9 +178,7 @@ class tx_ttguest extends tslib_pibase {
 							'type' => '*data[tt_guest][NEW][captcha]=input,60'
 						);
 					}
-
 					$tmp = $cObj->FORM($lConf);
-
 					$content.=$tmp;
 				break;
 				default:	// 'HELP'
@@ -216,14 +211,11 @@ class tx_ttguest extends tslib_pibase {
 					$content.=$this->cObj->substituteMarkerArray($helpTemplate,$markerArray);
 				}
 				break; // while
-			}		
-
+			}
 		}
-
 		$rc = $this->pi_wrapInBaseClass($content);
 		return $rc;
 	}
-
 
 	/**
 	 * does the initialization stuff
@@ -265,7 +257,6 @@ class tx_ttguest extends tslib_pibase {
 			$config['code'] = $this->cObj->stdWrap($conf['code'],$conf['code.']);
 		}
 
-
 		if (t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
 		 		// FE BE library for language functions
 			include_once(PATH_BE_fh_library.'lib/class.tx_fhlibrary_language.php');
@@ -302,7 +293,6 @@ class tx_ttguest extends tslib_pibase {
 			$this->freeCap = &t3lib_div::getUserObj('&tx_srfreecap_pi2');
 		}
 	}
-
 
 	/**
 	 * Main guestbook function.
@@ -402,7 +392,6 @@ class tx_ttguest extends tslib_pibase {
 		return $rc;
 	}
 }
-
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest.php'])	{
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest.php']);

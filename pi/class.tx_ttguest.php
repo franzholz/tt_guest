@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2007 Kasper Skårhøj <kasperYYYY@typo3.com>
+*  (c) 1999-2008 Kasper Skårhøj <kasperYYYY@typo3.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -45,7 +45,6 @@
 
 require_once(PATH_tslib.'class.tslib_pibase.php');
 require_once(PATH_BE_ttguest.'pi/class.tx_ttguest_RecordNavigator.php');
-
 
 class tx_ttguest extends tslib_pibase {
 	var $prefixId = 'tx_ttguest';	// Same as class name
@@ -187,13 +186,13 @@ class tx_ttguest extends tslib_pibase {
 				break;
 			}
 			if ($contentTmp == 'error') {
-				if (t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey))	{
-					include_once(PATH_BE_fh_library.'/lib/class.tx_fhlibrary_view.php');
-					$content .= tx_fhlibrary_view::displayHelpPage(
+				if (t3lib_extMgm::isLoaded(DIV2007_EXTkey))	{
+					$content .= tx_div2007_alpha::displayHelpPage_fh001(
 						$this,
 						$this->cObj->fileResource('EXT:'.TT_GUEST_EXTkey.'/pi/guest_help.tmpl'),
 						TT_GUEST_EXTkey,
-						$this->errorMessage
+						$this->errorMessage,
+						$theCode
 					);
 					unset($this->errorMessage);
 				} else {
@@ -227,7 +226,12 @@ class tx_ttguest extends tslib_pibase {
  	 */
 	function init (&$content,&$conf,&$config) {
 		global $TSFE;
-		
+
+		if (t3lib_extMgm::isLoaded(DIV2007_EXTkey))	{
+			include_once (PATH_BE_div2007.'class.tx_div2007_alpha.php');
+			include_once (PATH_BE_div2007.'class.tx_div2007_ff.php');
+		}
+
 			// pid_list is the pid/list of pids from where to fetch the guest items.
 		$tmp = trim($this->cObj->stdWrap($conf['pid_list'],$conf['pid_list.']));
 		// $config['pid_list'] = $config['pid_list'] ? implode(t3lib_div::intExplode(',',$config['pid_list']),',') : $TSFE->id;
@@ -238,29 +242,26 @@ class tx_ttguest extends tslib_pibase {
 			// template is read.
 		$this->orig_templateCode = $this->cObj->fileResource($conf['templateFile']);
 
-		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms'] && t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
-		 		// FE BE library for flexform functions
-			require_once(PATH_BE_fh_library.'lib/class.tx_fhlibrary_flexform.php');
+		if ($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms']) {
+				// Static Methods for Extensions for flexform functions
 				// check the flexform
 			$this->pi_initPIflexForm();
-			$config['code'] = tx_fhlibrary_flexform::getSetupOrFFvalue(
-				$this, 
-				$conf['code'], 
+			$config['code'] = tx_div2007_alpha::getSetupOrFFvalue_fh001(
+				$this,
+				$conf['code'],
 				$conf['code.'],
-				$this->conf['defaultCode'], 
-				$this->cObj->data['pi_flexform'], 
+				$this->conf['defaultCode'],
+				$this->cObj->data['pi_flexform'],
 				'display_mode',
 				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$this->extKey]['useFlexforms']
 			);
 		} else {
-				// 'CODE' decides what is rendered:
+				 // 'CODE' decides what is rendered:
 			$config['code'] = $this->cObj->stdWrap($conf['code'],$conf['code.']);
 		}
 
-		if (t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
-		 		// FE BE library for language functions
-			include_once(PATH_BE_fh_library.'lib/class.tx_fhlibrary_language.php');
-			tx_fhlibrary_language::pi_loadLL($this,'EXT:'.$this->extKey.'/pi/locallang.xml');
+		if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
+			tx_div2007_alpha::loadLL_fh001($this,'EXT:'.$this->extKey.'/pi/locallang.xml');
 		}
 
 			// globally substituted markers, fonts and colors.

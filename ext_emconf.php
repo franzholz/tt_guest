@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext: "tt_guest"
 #
-# Auto generated 18-10-2007 00:02
+# Auto generated 18-11-2007 07:15
 #
 # Manual updates:
 # Only the data in the array - anything else is removed by next write.
@@ -15,8 +15,8 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Simple guestbook with subject, comment, name, email and www.',
 	'category' => 'plugin',
 	'shy' => 0,
-	'version' => '1.2.1',
-	'dependencies' => 'cms,fh_library',
+	'version' => '1.2.2',
+	'dependencies' => 'cms,div2007',
 	'conflicts' => '',
 	'priority' => '',
 	'loadOrder' => '',
@@ -37,14 +37,14 @@ $EM_CONF[$_EXTKEY] = array(
 			'cms' => '',
 			'php' => '4.0.0-0.0.0',
 			'typo3' => '3.8.0-0.0.0',
-			'fh_library' => '0.0.18-',
+			'div2007' => '0.1.6-',
 		),
 		'conflicts' => array(
 		),
 		'suggests' => array(
 		),
 	),
-	'_md5_values_when_last_written' => 'a:29:{s:9:"ChangeLog";s:4:"3ef4";s:28:"class.tx_ttguest_wizicon.php";s:4:"a538";s:21:"ext_conf_template.txt";s:4:"dbec";s:12:"ext_icon.gif";s:4:"6754";s:15:"ext_icon__h.gif";s:4:"e999";s:17:"ext_localconf.php";s:4:"d209";s:14:"ext_tables.php";s:4:"d3d3";s:14:"ext_tables.sql";s:4:"594a";s:18:"flexform_ds_pi.xml";s:4:"d8f8";s:13:"guestbook.gif";s:4:"b513";s:13:"locallang.php";s:4:"7a32";s:25:"locallang_csh_ttguest.php";s:4:"ad4b";s:17:"locallang_tca.php";s:4:"7286";s:7:"tca.php";s:4:"31b5";s:23:"pi/class.tx_ttguest.php";s:4:"cf8c";s:39:"pi/class.tx_ttguest_RecordNavigator.php";s:4:"0650";s:18:"pi/guest_help.tmpl";s:4:"ab19";s:18:"pi/guest_help1.gif";s:4:"817b";s:19:"pi/guest_submit.inc";s:4:"5c48";s:23:"pi/guest_template1.tmpl";s:4:"7bd4";s:23:"pi/guest_template2.tmpl";s:4:"74eb";s:16:"pi/locallang.xml";s:4:"a14d";s:12:"doc/TODO.txt";s:4:"d602";s:14:"doc/manual.sxw";s:4:"d41d";s:26:"static/share/constants.txt";s:4:"7a97";s:30:"static/css_style/constants.txt";s:4:"f3cd";s:26:"static/css_style/setup.txt";s:4:"a3d9";s:30:"static/old_style/constants.txt";s:4:"097d";s:26:"static/old_style/setup.txt";s:4:"9821";}',
+	'_md5_values_when_last_written' => 'a:29:{s:9:"ChangeLog";s:4:"f0df";s:28:"class.tx_ttguest_wizicon.php";s:4:"a538";s:21:"ext_conf_template.txt";s:4:"dbec";s:12:"ext_icon.gif";s:4:"6754";s:15:"ext_icon__h.gif";s:4:"e999";s:17:"ext_localconf.php";s:4:"d209";s:14:"ext_tables.php";s:4:"d3d3";s:14:"ext_tables.sql";s:4:"594a";s:18:"flexform_ds_pi.xml";s:4:"d8f8";s:13:"guestbook.gif";s:4:"b513";s:13:"locallang.php";s:4:"7a32";s:25:"locallang_csh_ttguest.php";s:4:"ad4b";s:17:"locallang_tca.php";s:4:"7286";s:7:"tca.php";s:4:"31b5";s:23:"pi/class.tx_ttguest.php";s:4:"118a";s:39:"pi/class.tx_ttguest_RecordNavigator.php";s:4:"0650";s:18:"pi/guest_help.tmpl";s:4:"ab19";s:18:"pi/guest_help1.gif";s:4:"817b";s:19:"pi/guest_submit.inc";s:4:"5c48";s:23:"pi/guest_template1.tmpl";s:4:"7bd4";s:23:"pi/guest_template2.tmpl";s:4:"74eb";s:16:"pi/locallang.xml";s:4:"a14d";s:12:"doc/TODO.txt";s:4:"d602";s:14:"doc/manual.sxw";s:4:"ceef";s:26:"static/share/constants.txt";s:4:"7a97";s:30:"static/css_style/constants.txt";s:4:"d7da";s:26:"static/css_style/setup.txt";s:4:"b877";s:30:"static/old_style/constants.txt";s:4:"14e6";s:26:"static/old_style/setup.txt";s:4:"7e17";}',
 	'suggests' => array(
 	),
 );

@@ -1,3 +1,9 @@
+2008-04-28 Franz Holzinger <franz@fholzinger.com>
+	* replace fh_library by div2007
+
+2007-11-18 Franz Holzinger <franz@fholzinger.com>
+	* fix bug in setup for captcha
+
 2007-10-17 Franz Holzinger <franz@fholzinger.com>
 	* use sr_freecap for captcha
 
@@ -25,5 +31,5 @@
 2006-03-09 Franz Holzinger <franz@fholzinger.com>
 	* correct error with "###PREVNEXT### is not decoded"
 
-2004-07-21 Kasper Sk�rh�j <kasperYYYY@typo3.com>
+2004-07-21 Kasper Skårhøj <kasperYYYY@typo3.com>
 	* Initial CVS upload

@@ -76,82 +76,132 @@ class tx_ttguest extends tslib_pibase {
 	/**
 	 * Main guestbook function.
 	 */
-	public function main($content,$conf) {
+	public function main($content, $conf) {
 		global $TSFE;
 
 		$this->conf = $conf;
 
-		$this->init ($content, $conf, $this->config);
+		$this->init($content, $conf, $this->config);
 		$cObj = t3lib_div::makeInstance('tslib_cObj');	// Initiate new cObj, because we're loading the data-array
-		// list($pid) = t3lib_div::trimExplode(',',$this->pid_list);
-
-		$alternativeLayouts = intval($conf['alternatingLayouts'])>0 ? intval($conf['alternatingLayouts']) : 2;
-		$codes=t3lib_div::trimExplode(',', $this->config['code'],1);
-		if (!count($codes))	$codes=array('');
+		$alternativeLayouts = intval($conf['alternatingLayouts']) > 0 ? intval($conf['alternatingLayouts']) : 2;
+		$codes = t3lib_div::trimExplode(',', $this->config['code'],1);
+		if (!count($codes)) {
+			$codes = array('');
+		}
 
 		foreach($codes as $theCode) {
 			$theCode = (string)strtoupper(trim($theCode));
 			switch($theCode) {
 				case 'GUESTBOOK':
-					$lConf=$conf;
+					$lConf = $conf;
 
 					if (!$lConf['subpartMarker']) {
-						$lConf['subpartMarker']='TEMPLATE_GUESTBOOK';
+						$lConf['subpartMarker'] = 'TEMPLATE_GUESTBOOK';
 					}
 
 						// Getting template subpart from file.
-					$templateCode = $cObj->getSubpart($this->orig_templateCode, '###'.$lConf['subpartMarker'].'###');
+					$templateCode = $cObj->getSubpart($this->orig_templateCode, '###' . $lConf['subpartMarker'] . '###');
+
 					if ($templateCode) {
 							// Getting the specific parts of the template
-						$postHeader=$this->getLayouts($templateCode,$alternativeLayouts,'POST');
+						$postHeader = $this->getLayouts($templateCode, $alternativeLayouts, 'POST');
 
 							// Fetching the guest book item(s) to display:
 						if ($config['displayCurrentRecord']) {
-							$recentPosts=array();
+							$recentPosts = array();
 							$recentPosts[] = $this->cObj->data;
 						} else {
 							$recentPosts = $this->getItems($this->pid_list);
 						}
 							// Traverse the items and display them:
 						reset($recentPosts);
-						$c_post=0;
-						$subpartContent='';
+						$c_post = 0;
+						$subpartContent = '';
 						foreach($recentPosts as $recentPost) {
 								// Passing data through stdWrap and into the markerArray
 							$cObj->start($recentPost);		// Set this->data to the current record tt_guest record.
-							$markerArray=array();
-							$markerArray['###POST_TITLE###'] = $cObj->stdWrap($this->formatStr($recentPost['title']), $conf['title_stdWrap.']);
-							$markerArray['###POST_CONTENT###'] = $cObj->stdWrap($this->formatStr($recentPost['note']), $conf['note_stdWrap.']);
-							$markerArray['###POST_AUTHOR###'] = $cObj->stdWrap($this->formatStr($recentPost['cr_name']), $conf['author_stdWrap.']);
-							$markerArray['###POST_EMAIL###'] = $cObj->stdWrap($this->formatStr($recentPost['cr_email']), $conf['email_stdWrap.']);
-							$markerArray['###POST_WWW###'] = $cObj->stdWrap($this->formatStr($recentPost['www']), $conf['www_stdWrap.']);
-							$markerArray['###POST_DATE###'] = $cObj->stdWrap($recentPost['crdate'],$conf['date_stdWrap.']);
-							$markerArray['###POST_TIME###'] = $cObj->stdWrap($recentPost['crdate'],$conf['time_stdWrap.']);
-							$markerArray['###POST_AGE###'] = $cObj->stdWrap($recentPost['crdate'],$conf['age_stdWrap.']);
+							$markerArray = array();
+							$markerArray['###POST_TITLE###'] =
+								$cObj->stdWrap(
+									$this->formatStr($recentPost['title']),
+									$conf['title_stdWrap.']
+								);
+							$markerArray['###POST_CONTENT###'] =
+								$cObj->stdWrap(
+									$this->formatStr($recentPost['note']),
+									$conf['note_stdWrap.']
+								);
+							$markerArray['###POST_AUTHOR###'] =
+								$cObj->stdWrap(
+									$this->formatStr($recentPost['cr_name']),
+									$conf['author_stdWrap.']
+								);
+							$markerArray['###POST_EMAIL###'] =
+								$cObj->stdWrap(
+									$this->formatStr($recentPost['cr_email']),
+									$conf['email_stdWrap.']
+								);
+							$markerArray['###POST_WWW###'] =
+								$cObj->stdWrap(
+									$this->formatStr($recentPost['www']),
+									$conf['www_stdWrap.']
+								);
+							$markerArray['###POST_DATE###'] =
+								$cObj->stdWrap(
+									$recentPost['crdate'],
+									$conf['date_stdWrap.']
+								);
+							$markerArray['###POST_TIME###'] =
+								$cObj->stdWrap(
+									$recentPost['crdate'],
+									$conf['time_stdWrap.']
+								);
+							$markerArray['###POST_AGE###'] =
+								$cObj->stdWrap(
+									$recentPost['crdate'],
+									$conf['age_stdWrap.']
+								);
 								// Substitute the markerArray in the proper template code (POST subparts, alternating)
-							$out=$postHeader[$c_post%count($postHeader)];
+							$out=$postHeader[$c_post % count($postHeader)];
 							$c_post++;
-							$subpartContent.=$cObj->substituteMarkerArrayCached($out,$markerArray);
+							$subpartContent .=
+								$cObj->substituteMarkerArrayCached(
+									$out,
+									$markerArray
+								);
 						}
 
 							// Total Substitution:
 						if ($lConf['requireRecords'] && !count($recentPosts)) {
-							$content.= '';
+							$content .= '';
 						} else {
 							$subpartArray = array();
 							$subpartArray['###CONTENT###'] = $subpartContent;
 							$markerArray = array();
 							$markerArray['###COMMENTS###'] = $this->pi_getLL('comments');
-							$content.= $cObj->substituteMarkerArrayCached($templateCode,$markerArray,$subpartArray) ;
+							$content .=
+								$cObj->substituteMarkerArrayCached(
+									$templateCode,
+									$markerArray,
+									$subpartArray
+								);
 						}
 					} else {
-						debug('No template code for the subpart maker ###'.$lConf['subpartMarker'].'###');
+						debug('No template code for the subpart maker ###' . $lConf['subpartMarker'] . '###');
 					}
 
 				break;
 				case 'POSTFORM':
 					$lConf = $conf['postform.'];
-					$setupArray = array('10' => 'title', '20' => 'note', '30' => 'cr_name', '40' => 'cr_email', '50' => 'www', '60' => 'post');
+					$setupArray =
+						array(
+							'10' => 'title',
+							'20' => 'note',
+							'30' => 'cr_name',
+							'40' => 'cr_email',
+							'50' => 'www',
+							'60' => 'post'
+						);
 
 					foreach ($setupArray as $k => $type) {
 						if ($k == '60') {
@@ -159,21 +209,23 @@ class tx_ttguest extends tslib_pibase {
 						} else {
 							$field = 'label';
 						}
-						if (is_array($lConf['dataArray.'][$k.'.'])) {
+
+						if (is_array($lConf['dataArray.'][$k . '.'])) {
 							if (
-								(!$this->LLkey || $this->LLkey=='en') && !$lConf['dataArray.'][$k.'.'][$field] ||
-								($this->LLkey!='en' &&
-									!is_array($lConf['dataArray.'][$k.'.'][$field.'.']) ||  !is_array($lConf['dataArray.'][$k.'.'][$field.'.']['lang.']) || !is_array($lConf['dataArray.'][$k.'.'][$field.'.']['lang.'][$this->LLkey.'.'])
+								(!$this->LLkey || $this->LLkey == 'en') && !$lConf['dataArray.'][$k . '.'][$field] ||
+								($this->LLkey != 'en' &&
+									!is_array($lConf['dataArray.'][$k . '.'][$field . '.']) ||  !is_array($lConf['dataArray.'][$k . '.'][$field . '.']['lang.']) || !is_array($lConf['dataArray.'][$k . '.'][$field . '.']['lang.'][$this->LLkey . '.'])
 								)
 							) {
-								$lConf['dataArray.'][$k.'.'][$field] = $this->pi_getLL($type);
+								$lConf['dataArray.'][$k . '.'][$field] = $this->pi_getLL($type);
 							}
 						}
 					}
+
 					if (is_object($this->freeCap)) {
 						$freecapMarker = $this->freeCap->makeCaptcha();
 						$lConf['dataArray.']['55.'] = array(
-							'label' => $freecapMarker['###SR_FREECAP_IMAGE###'] . '<br>' . $freecapMarker['###SR_FREECAP_NOTICE###']. '<br>' . $freecapMarker['###SR_FREECAP_CANT_READ###'],
+							'label' => $freecapMarker['###SR_FREECAP_IMAGE###'] . '<br>' . $freecapMarker['###SR_FREECAP_NOTICE###'] . '<br>' . $freecapMarker['###SR_FREECAP_CANT_READ###'],
 							'type' => '*data[tt_guest][NEW][captcha]=input,60'
 						);
 					}
@@ -189,7 +241,7 @@ class tx_ttguest extends tslib_pibase {
 				if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
 					$content .= tx_div2007_alpha::displayHelpPage_fh001(
 						$this,
-						$this->cObj->fileResource('EXT:'.TT_GUEST_EXTkey.'/pi/guest_help.tmpl'),
+						$this->cObj->fileResource('EXT:' . TT_GUEST_EXTkey . '/pi/guest_help.tmpl'),
 						TT_GUEST_EXTkey,
 						$this->errorMessage,
 						$theCode
@@ -197,12 +249,21 @@ class tx_ttguest extends tslib_pibase {
 					unset($this->errorMessage);
 				} else {
 					$langKey = strtoupper($TSFE->config['config']['language']);
-					$helpTemplate = $this->cObj->fileResource('EXT:'.TT_GUEST_EXTkey.'/pi/guest_help.tmpl');
+					$helpTemplate = $this->cObj->fileResource('EXT:' . TT_GUEST_EXTkey . '/pi/guest_help.tmpl');
 
 						// Get language version
-					$helpTemplate_lang='';
-					if ($langKey)	{$helpTemplate_lang = $this->cObj->getSubpart($helpTemplate,'###TEMPLATE_'.$langKey.'###');}
-					$helpTemplate = $helpTemplate_lang ? $helpTemplate_lang : $this->cObj->getSubpart($helpTemplate,'###TEMPLATE_DEFAULT###');
+					$helpTemplate_lang = '';
+					if ($langKey) {
+						$helpTemplate_lang =
+							$this->cObj->getSubpart(
+								$helpTemplate,
+								'###TEMPLATE_' . $langKey . '###'
+							);
+					}
+					$helpTemplate =
+						$helpTemplate_lang ?
+							$helpTemplate_lang :
+							$this->cObj->getSubpart($helpTemplate, '###TEMPLATE_DEFAULT###');
 
 						// Markers and substitution:
 					$markerArray['###CODE###'] = $theCode;
@@ -224,17 +285,17 @@ class tx_ttguest extends tslib_pibase {
 	 * @param		string		  modified configuration array
 	 * @return	  void
  	 */
-	public function init (&$content,&$conf,&$config) {
+	public function init (&$content, &$conf, &$config) {
 		global $TSFE;
 
 		if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
-			include_once (PATH_BE_div2007.'class.tx_div2007_alpha.php');
-			include_once (PATH_BE_div2007.'class.tx_div2007_ff.php');
+			t3lib_div::requireOnce(PATH_BE_div2007 . 'class.tx_div2007_alpha.php');
+			t3lib_div::requireOnce(PATH_BE_div2007 . 'class.tx_div2007_alpha5.php');
+			t3lib_div::requireOnce(PATH_BE_div2007 . 'class.tx_div2007_ff.php');
 		}
 
 			// pid_list is the pid/list of pids from where to fetch the guest items.
-		$tmp = trim($this->cObj->stdWrap($conf['pid_list'],$conf['pid_list.']));
-
+		$tmp = trim($this->cObj->stdWrap($conf['pid_list'], $conf['pid_list.']));
 		$pid_list = $config['pid_list'] = ($conf['pid_list'] ? $conf['pid_list'] : trim($this->cObj->stdWrap($conf['pid_list'], $conf['pid_list.'])));
 		$this->pid_list = ($pid_list ? $pid_list : $TSFE->id);
 
@@ -305,7 +366,7 @@ class tx_ttguest extends tslib_pibase {
 	public function getLayouts($templateCode, $alternativeLayouts, $marker) {
 		$out = array();
 		for($a = 0; $a < $alternativeLayouts; $a++) {
-			$m= '###' . $marker . ($a ? '_' . $a : '') . '###';
+			$m = '###' . $marker . ($a ? '_' . $a : '') . '###';
 			if(strstr($templateCode,$m)) {
 				$out[] = $GLOBALS['TSFE']->cObj->getSubpart($templateCode, $m);
 			} else {

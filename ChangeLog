@@ -1,3 +1,7 @@
+2012-01-21 Franz Holzinger <franz@ttproducts.de>
+	* make PHP 5.2 a requirement
+	* ready for TYPO3 4.6
+
 2008-04-28 Franz Holzinger <franz@fholzinger.com>
 	* replace fh_library by div2007
 

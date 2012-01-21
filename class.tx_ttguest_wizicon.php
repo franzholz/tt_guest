@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2006 Kasper Skaarhoj (kasperYYYY@typo3.com)
+*  (c) 2012 Kasper Skaarhoj (kasperYYYY@typo3.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -26,7 +26,7 @@
 ***************************************************************/
 /**
  * Class, containing function for adding an element to the content element wizard.
- * 
+ *
  * $Id$
  *
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
@@ -52,7 +52,7 @@
  *
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
  * @package TYPO3
- * @subpackage tx_ttguest
+ * @subpackage tt_guest
  */
 class tx_ttguest_wizicon {
 
@@ -63,7 +63,7 @@ class tx_ttguest_wizicon {
 	 * @return	array		Wizard item array, processed (adding a plugin for tt_guest extension)
 	 * @see SC_db_new_content_el::wizardArray()
 	 */
-	function proc($wizardItems)	{
+	public function proc($wizardItems) {
 		global $LANG;
 
 			// Include the locallang information.
@@ -71,10 +71,10 @@ class tx_ttguest_wizicon {
 
 			// Adding the item:
 		$wizardItems['plugins_ttguest'] = array(
-			'icon'=>PATH_BE_ttguest_rel.'guestbook.gif',
-			'title'=>$LANG->getLLL('plugins_title',$LL),
-			'description'=>$LANG->getLLL('plugins_description',$LL),
-			'params'=>'&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=3&defVals[tt_content][select_key]='.rawurlencode('GUESTBOOK, POSTFORM')
+			'icon' => PATH_BE_ttguest_rel . 'guestbook.gif',
+			'title' => $LANG->getLLL('plugins_title', $LL),
+			'description' => $LANG->getLLL('plugins_description', $LL),
+			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=3&defVals[tt_content][select_key]=' . rawurlencode('GUESTBOOK, POSTFORM')
 		);
 
 		return $wizardItems;
@@ -85,14 +85,14 @@ class tx_ttguest_wizicon {
 	 *
 	 * @return	array		LOCAL_LANG array
 	 */
-	function includeLocalLang()	{
+	function includeLocalLang() {
 		$LOCAL_LANG = '';
-		include(PATH_BE_ttguest.'locallang.php');
+		include(PATH_BE_ttguest . 'locallang.php');
 		return $LOCAL_LANG;
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/class.tx_ttguest_wizicon.php'])	{
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/class.tx_ttguest_wizicon.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/class.tx_ttguest_wizicon.php']);
 }
 ?>

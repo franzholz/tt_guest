@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2008 Kasper Skårhøj <kasperYYYY@typo3.com>
+*  (c) 2012 Kasper Skårhøj <kasperYYYY@typo3.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -35,29 +35,29 @@
  *
  * Other resources:
  * 'guest_submit.inc' is used for submission of the guest book entries to the database. This is done through the FEData TypoScript object. See the file 'ext_typoscript_setup.txt' for an example of how to set this up.
- * 
+ *
  * $Id$
  *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
- * @author	Franz Holzinger <kontakt@fholzinger.com>
+ * @author	Franz Holzinger <franz@ttproducts.de>
  */
 
 
-require_once(PATH_tslib.'class.tslib_pibase.php');
-require_once(PATH_BE_ttguest.'pi/class.tx_ttguest_RecordNavigator.php');
+require_once(PATH_tslib . 'class.tslib_pibase.php');
+require_once(PATH_BE_ttguest . 'pi/class.tx_ttguest_RecordNavigator.php');
 
 class tx_ttguest extends tslib_pibase {
-	var $prefixId = 'tx_ttguest';	// Same as class name
-	var $scriptRelPath = 'pi/class.tx_ttguest.php';	// Path to this script relative to the extension dir.
-	var $extKey = TT_GUEST_EXTkey;	// The extension key.
-	var $cObj;			// The backReference to the mother cObj object set at call time
-	var $enableFields ='';		// The enablefields of the tt_guest table.
-	var $dontParseContent=0;
-	var $orig_templateCode='';
-	var $config=array();		// updated configuration
-	var $pid_list;			// list of page ids
-	var $recordCount; 		// number of records
-	var $freeCap;
+	public $prefixId = 'tx_ttguest';	// Same as class name
+	public $scriptRelPath = 'pi/class.tx_ttguest.php';	// Path to this script relative to the extension dir.
+	public $extKey = TT_GUEST_EXTkey;	// The extension key.
+	public $cObj;			// The backReference to the mother cObj object set at call time
+	public $enableFields ='';		// The enablefields of the tt_guest table.
+	public $dontParseContent = 0;
+	public $orig_templateCode = '';
+	public $config = array();		// updated configuration
+	public $pid_list;			// list of page ids
+	public $recordCount; 		// number of records
+	public $freeCap;
 
 	/**
 	 * Class Constructor (true constructor)
@@ -66,7 +66,7 @@ class tx_ttguest extends tslib_pibase {
 	 *
 	 * @return	void
 	 */
-	function tslib_pibase()	{
+	public function tslib_pibase() {
 		global $TSFE;
 
 		$TSFE->makeCacheHash();
@@ -76,12 +76,12 @@ class tx_ttguest extends tslib_pibase {
 	/**
 	 * Main guestbook function.
 	 */
-	function main($content,$conf)	{
+	public function main($content,$conf) {
 		global $TSFE;
-		
+
 		$this->conf = $conf;
 
-		$this->init ($content, $conf, $this->config);	
+		$this->init ($content, $conf, $this->config);
 		$cObj = t3lib_div::makeInstance('tslib_cObj');	// Initiate new cObj, because we're loading the data-array
 		// list($pid) = t3lib_div::trimExplode(',',$this->pid_list);
 
@@ -89,24 +89,24 @@ class tx_ttguest extends tslib_pibase {
 		$codes=t3lib_div::trimExplode(',', $this->config['code'],1);
 		if (!count($codes))	$codes=array('');
 
-		foreach($codes as $theCode)	{
+		foreach($codes as $theCode) {
 			$theCode = (string)strtoupper(trim($theCode));
-			switch($theCode)	{
+			switch($theCode) {
 				case 'GUESTBOOK':
 					$lConf=$conf;
 
-					if (!$lConf['subpartMarker'])	{
+					if (!$lConf['subpartMarker']) {
 						$lConf['subpartMarker']='TEMPLATE_GUESTBOOK';
 					}
 
 						// Getting template subpart from file.
 					$templateCode = $cObj->getSubpart($this->orig_templateCode, '###'.$lConf['subpartMarker'].'###');
-					if ($templateCode)	{
+					if ($templateCode) {
 							// Getting the specific parts of the template
 						$postHeader=$this->getLayouts($templateCode,$alternativeLayouts,'POST');
 
 							// Fetching the guest book item(s) to display:
-						if ($config['displayCurrentRecord'])	{
+						if ($config['displayCurrentRecord']) {
 							$recentPosts=array();
 							$recentPosts[] = $this->cObj->data;
 						} else {
@@ -116,7 +116,7 @@ class tx_ttguest extends tslib_pibase {
 						reset($recentPosts);
 						$c_post=0;
 						$subpartContent='';
-						foreach($recentPosts as $recentPost)	{
+						foreach($recentPosts as $recentPost) {
 								// Passing data through stdWrap and into the markerArray
 							$cObj->start($recentPost);		// Set this->data to the current record tt_guest record.
 							$markerArray=array();
@@ -135,7 +135,7 @@ class tx_ttguest extends tslib_pibase {
 						}
 
 							// Total Substitution:
-						if ($lConf['requireRecords'] && !count($recentPosts))	{
+						if ($lConf['requireRecords'] && !count($recentPosts)) {
 							$content.= '';
 						} else {
 							$subpartArray = array();
@@ -153,16 +153,16 @@ class tx_ttguest extends tslib_pibase {
 					$lConf = $conf['postform.'];
 					$setupArray = array('10' => 'title', '20' => 'note', '30' => 'cr_name', '40' => 'cr_email', '50' => 'www', '60' => 'post');
 
-					foreach ($setupArray as $k => $type)	{
-						if ($k == '60')	{
+					foreach ($setupArray as $k => $type) {
+						if ($k == '60') {
 							$field = 'value';
 						} else {
 							$field = 'label';
 						}
-						if (is_array($lConf['dataArray.'][$k.'.']))	{
+						if (is_array($lConf['dataArray.'][$k.'.'])) {
 							if (
-								(!$this->LLkey || $this->LLkey=='en') && !$lConf['dataArray.'][$k.'.'][$field] || 
-								($this->LLkey!='en' && 
+								(!$this->LLkey || $this->LLkey=='en') && !$lConf['dataArray.'][$k.'.'][$field] ||
+								($this->LLkey!='en' &&
 									!is_array($lConf['dataArray.'][$k.'.'][$field.'.']) ||  !is_array($lConf['dataArray.'][$k.'.'][$field.'.']['lang.']) || !is_array($lConf['dataArray.'][$k.'.'][$field.'.']['lang.'][$this->LLkey.'.'])
 								)
 							) {
@@ -170,7 +170,7 @@ class tx_ttguest extends tslib_pibase {
 							}
 						}
 					}
-					if (is_object($this->freeCap))	{
+					if (is_object($this->freeCap)) {
 						$freecapMarker = $this->freeCap->makeCaptcha();
 						$lConf['dataArray.']['55.'] = array(
 							'label' => $freecapMarker['###SR_FREECAP_IMAGE###'] . '<br>' . $freecapMarker['###SR_FREECAP_NOTICE###']. '<br>' . $freecapMarker['###SR_FREECAP_CANT_READ###'],
@@ -186,7 +186,7 @@ class tx_ttguest extends tslib_pibase {
 				break;
 			}
 			if ($contentTmp == 'error') {
-				if (t3lib_extMgm::isLoaded(DIV2007_EXTkey))	{
+				if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
 					$content .= tx_div2007_alpha::displayHelpPage_fh001(
 						$this,
 						$this->cObj->fileResource('EXT:'.TT_GUEST_EXTkey.'/pi/guest_help.tmpl'),
@@ -224,19 +224,18 @@ class tx_ttguest extends tslib_pibase {
 	 * @param		string		  modified configuration array
 	 * @return	  void
  	 */
-	function init (&$content,&$conf,&$config) {
+	public function init (&$content,&$conf,&$config) {
 		global $TSFE;
 
-		if (t3lib_extMgm::isLoaded(DIV2007_EXTkey))	{
+		if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
 			include_once (PATH_BE_div2007.'class.tx_div2007_alpha.php');
 			include_once (PATH_BE_div2007.'class.tx_div2007_ff.php');
 		}
 
 			// pid_list is the pid/list of pids from where to fetch the guest items.
 		$tmp = trim($this->cObj->stdWrap($conf['pid_list'],$conf['pid_list.']));
-		// $config['pid_list'] = $config['pid_list'] ? implode(t3lib_div::intExplode(',',$config['pid_list']),',') : $TSFE->id;
-		
-		$pid_list = $config['pid_list'] = ($conf['pid_list'] ? $conf['pid_list'] :trim($this->cObj->stdWrap($conf['pid_list'],$conf['pid_list.'])));
+
+		$pid_list = $config['pid_list'] = ($conf['pid_list'] ? $conf['pid_list'] : trim($this->cObj->stdWrap($conf['pid_list'], $conf['pid_list.'])));
 		$this->pid_list = ($pid_list ? $pid_list : $TSFE->id);
 
 			// template is read.
@@ -257,26 +256,26 @@ class tx_ttguest extends tslib_pibase {
 			);
 		} else {
 				 // 'CODE' decides what is rendered:
-			$config['code'] = $this->cObj->stdWrap($conf['code'],$conf['code.']);
+			$config['code'] = $this->cObj->stdWrap($conf['code'], $conf['code.']);
 		}
 
 		if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
-			tx_div2007_alpha::loadLL_fh001($this,'EXT:'.$this->extKey.'/pi/locallang.xml');
+			tx_div2007_alpha::loadLL_fh001($this, 'EXT:' . $this->extKey . '/pi/locallang.xml');
 		}
 
 			// globally substituted markers, fonts and colors.
 		$splitMark = md5(microtime());
-		$globalMarkerArray=array();
-		list($globalMarkerArray['###GW1B###'],$globalMarkerArray['###GW1E###']) = explode($splitMark,$this->cObj->stdWrap($splitMark,$conf['wrap1.']));
-		list($globalMarkerArray['###GW2B###'],$globalMarkerArray['###GW2E###']) = explode($splitMark,$this->cObj->stdWrap($splitMark,$conf['wrap2.']));
-		$globalMarkerArray['###GC1###'] = $this->cObj->stdWrap($conf['color1'],$conf['color1.']);
-		$globalMarkerArray['###GC2###'] = $this->cObj->stdWrap($conf['color2'],$conf['color2.']);
-		$globalMarkerArray['###GC3###'] = $this->cObj->stdWrap($conf['color3'],$conf['color3.']);
+		$globalMarkerArray = array();
+		list($globalMarkerArray['###GW1B###'], $globalMarkerArray['###GW1E###']) = explode($splitMark, $this->cObj->stdWrap($splitMark, $conf['wrap1.']));
+		list($globalMarkerArray['###GW2B###'], $globalMarkerArray['###GW2E###']) = explode($splitMark, $this->cObj->stdWrap($splitMark, $conf['wrap2.']));
+		$globalMarkerArray['###GC1###'] = $this->cObj->stdWrap($conf['color1'], $conf['color1.']);
+		$globalMarkerArray['###GC2###'] = $this->cObj->stdWrap($conf['color2'], $conf['color2.']);
+		$globalMarkerArray['###GC3###'] = $this->cObj->stdWrap($conf['color3'], $conf['color3.']);
 
 			// If the current record should be displayed.
 		$config['displayCurrentRecord'] = $conf['displayCurrentRecord'];
-		if ($config['displayCurrentRecord'])	{
-			$config['code']='GUESTBOOK';
+		if ($config['displayCurrentRecord']) {
+			$config['code'] = 'GUESTBOOK';
 		}
 
 		// *************************************
@@ -288,9 +287,14 @@ class tx_ttguest extends tslib_pibase {
 		$globalMarkerArray['###PREVNEXT###'] = $this->getPrevNext();
 
 			// Substitute Global Marker Array
-		$this->orig_templateCode= $this->cObj->substituteMarkerArray($this->orig_templateCode, $globalMarkerArray);
+		$this->orig_templateCode =
+			$this->cObj->substituteMarkerArray(
+				$this->orig_templateCode,
+				$globalMarkerArray
+			);
+
 		if ($this->conf['captcha'] == 'freecap' && t3lib_extMgm::isLoaded('sr_freecap') ) {
-			require_once(t3lib_extMgm::extPath('sr_freecap').'pi2/class.tx_srfreecap_pi2.php');
+			require_once(t3lib_extMgm::extPath('sr_freecap') . 'pi2/class.tx_srfreecap_pi2.php');
 			$this->freeCap = &t3lib_div::getUserObj('&tx_srfreecap_pi2');
 		}
 	}
@@ -298,12 +302,12 @@ class tx_ttguest extends tslib_pibase {
 	/**
 	 * Main guestbook function.
 	 */
-	function getLayouts($templateCode,$alternativeLayouts,$marker)	{
-		$out=array();
-		for($a=0;$a<$alternativeLayouts;$a++)	{
-			$m= '###'.$marker.($a?'_'.$a:'').'###';
-			if(strstr($templateCode,$m))	{
-				$out[]=$GLOBALS['TSFE']->cObj->getSubpart($templateCode, $m);
+	public function getLayouts($templateCode, $alternativeLayouts, $marker) {
+		$out = array();
+		for($a = 0; $a < $alternativeLayouts; $a++) {
+			$m= '###' . $marker . ($a ? '_' . $a : '') . '###';
+			if(strstr($templateCode,$m)) {
+				$out[] = $GLOBALS['TSFE']->cObj->getSubpart($templateCode, $m);
 			} else {
 				break;
 			}
@@ -314,29 +318,27 @@ class tx_ttguest extends tslib_pibase {
 	/**
 	 * Main guestbook function.
 	 */
-	function getItems($pid)	{
+	public function getItems($pid) {
 		global $TYPO3_DB;
 
-		if(!isset($_REQUEST['offset']))
-		{
+		if(!isset($_REQUEST['offset'])) {
 			$offset = 0;
 		}
-		else
-		{
+		else {
 			$offset = (int) $_REQUEST['offset'];
 		}
 
 		$res = $TYPO3_DB->exec_SELECTquery(
 			'*',
 			'tt_guest',
-			'pid IN ('.$pid.')'.$this->enableFields,
+			'pid IN (' . $pid . ')' . $this->enableFields,
 			'',
 			'crdate DESC',
-			$offset.', '.$this->conf['limit']
+			$offset . ', ' . $this->conf['limit']
 		);
 
 		$out = array();
-		while($row = $TYPO3_DB->sql_fetch_assoc($res))	{
+		while($row = $TYPO3_DB->sql_fetch_assoc($res)) {
 			$out[] = $row;
 		}
 		return $out;
@@ -345,19 +347,19 @@ class tx_ttguest extends tslib_pibase {
 	/**
 	 * Main guestbook function.
 	 */
-	function formatStr($str)	{
-		if (!$this->dontParseContent)	{
+	public function formatStr($str) {
+		if (!$this->dontParseContent) {
 			return nl2br(htmlspecialchars($str));
 		} else {
 			return $str;
 		}
 	}
 
-	function getRecordCount($pid)	{
+	public function getRecordCount($pid) {
 		$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
 			'COUNT(*) AS thecount',
 			'tt_guest',
-			'pid IN ('.$pid.')'.$this->enableFields,
+			'pid IN (' . $pid . ')' . $this->enableFields,
 			'',
 			'',
 			''
@@ -369,18 +371,18 @@ class tx_ttguest extends tslib_pibase {
 		return $thecount;
 	}
 
-	function getPrevNext()	{
+	public function getPrevNext() {
 		$nav = new tx_ttguest_RecordNavigator(
-			$this->recordCount, 
-			$_REQUEST['offset'], 
-			$this->conf['limit'], 
-			'?pid='.$GLOBALS['TSFE']->id
+			$this->recordCount,
+			$_REQUEST['offset'],
+			$this->conf['limit'],
+			'?pid=' . $GLOBALS['TSFE']->id
 		);
 		$nav->createSequence();
 
 		$setupArray = array(0 => 'previousLabel', 1 => 'nextLabel');
 		$labelArray =  array();
-		foreach ($setupArray as $k => $labelKey)	{
+		foreach ($setupArray as $k => $labelKey) {
 			if ($this->conf[$labelKey]) {
 				$labelArray[$k] = $this->conf[$labelKey];
 			} else {
@@ -394,7 +396,7 @@ class tx_ttguest extends tslib_pibase {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest.php'])	{
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest.php']);
 }
 

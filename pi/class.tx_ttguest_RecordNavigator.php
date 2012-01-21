@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2006 Kasper Skårhøj <kasperYYYY@typo3.com>
+*  (c) 2012 Kasper Skårhøj <kasperYYYY@typo3.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -31,7 +31,7 @@
  * Type: Class
  * Purpose: Provide interface for creating next/previous and page # links
  * Usage:
- * 
+ *
  * $RN = new RecordNavigator(
  * 	"SELECT COUNT(*) FROM yourtable",
  * 	$passedOffset,
@@ -41,97 +41,92 @@
  * $RN->createSequence();
  * $RN->createPrevNext("previous", "next");
  * echo($RN->getNavigator());
- * 
+ *
  * $Id$
  *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
- * @author	Franz Holzinger <kontakt@fholzinger.com>
+ * @author	Franz Holzinger <franz@ttproducts.de>
  */
 
 
 class tx_ttguest_RecordNavigator {
-	var $queryCount;
-	var $offset;
-	var $limiter;
-	var $seqStr;
-	var $scriptPath;
+	public $queryCount;
+	public $offset;
+	public $limiter;
+	public $seqStr;
+	public $scriptPath;
 
-	var $cObj = null; // for making typo3 links
-	var $typoVersion; // TYPO3 version
+	public $cObj = null; // for making typo3 links
 
 	/* constructor */
-	function tx_ttguest_RecordNavigator($queryCount, $offset, $limiter, $scriptpath) { 
+	public function tx_ttguest_RecordNavigator($queryCount, $offset, $limiter, $scriptpath) {
 		$this->queryCount 	= $queryCount;
 		$this->offset 		= $offset;
 		$this->limiter		= $limiter;
 		$this->scriptPath 	= $scriptpath;
 
 		$this->cObj = new tslib_cObj();
-		$this->typoVersion = t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']);
-		
 	}
-	
+
 	/* create page # sequence */
-	function createSequence() {
-	
+	public function createSequence() {
+
 		$numPages = ceil($this->queryCount / $this->limiter);
 		$nextOffset = 0;
 
 		/* if there are more records than currently counted, generate sequence */
-		if($this->queryCount > $this->limiter) {		
+		if($this->queryCount > $this->limiter) {
 			for($i = 1; $i <= $numPages; $i++) {
 				if($this->offset != $nextOffset) {
 					$this->seqStr .= $this->createOffsetLink($nextOffset, $i, '');
 				}
 				else {
-					$this->seqStr .= '<li class="current">'.$i.'</li>';
+					$this->seqStr .= '<li class="current">' . $i . '</li>';
 				}
 				$nextOffset += $this->limiter;
 			}
 		}
 	}
 
-	/* create offset link */	
-	function &createOffsetLink($newOffset, $label, $class)	{
+	/* create offset link */
+	public function &createOffsetLink($newOffset, $label, $class) {
 		global $TSFE;
-		
+
 		$pA = array();
-		if ($this->typoVersion >= 3008000)	{
-			$addQueryParams = '&offset='.$newOffset;
-			$pA = t3lib_div::cHashParams($addQueryParams.$TSFE->linkVars);
-			$pA['cHash'] = t3lib_div::shortMD5(serialize($pA));
-			unset($pA['encryptionKey']);
-		} else {
-			$pA= array('offset' => $newOffset);
-		}
-		
-		$rc = '<li'.($class ? ' class="'.$class.'"': '') . '>'.$this->cObj->getTypoLink(
-			$label,
-			$TSFE->id,
-			$pA,
-			'').'</li>';
+		$addQueryParams = '&offset=' . $newOffset;
+		$pA = t3lib_div::cHashParams($addQueryParams . $TSFE->linkVars);
+		$pA['cHash'] = t3lib_div::shortMD5(serialize($pA));
+		unset($pA['encryptionKey']);
+
+		$rc = '<li'.($class ? ' class="' . $class . '"': '') . '>' .
+			$this->cObj->getTypoLink(
+				$label,
+				$TSFE->id,
+				$pA,
+				'') .
+			'</li>';
 
 		return $rc;
 	}
-	
+
 	/* create previous/next links */
 	function createPrevNext($prevLabel, $nextLabel) {
 
 		if((int) $this->offset != 0) {
-			$this->seqStr = $this->createOffsetLink($this->offset - $this->limiter, $prevLabel, 'prev').$this->seqStr;
+			$this->seqStr = $this->createOffsetLink($this->offset - $this->limiter, $prevLabel, 'prev') . $this->seqStr;
 		}
 		if($this->queryCount > ($this->offset + $this->limiter)) {
 			$this->seqStr = $this->seqStr.$this->createOffsetLink($this->offset + $this->limiter, $nextLabel, 'next');
 		}
 	}
-	
+
 	/* return full navigation string */
 	function getNavigator() {
-		return '<ul class="prevnext">'.$this->seqStr.'</ul>';
+		return '<ul class="prevnext">' . $this->seqStr . '</ul>';
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest_RecordNavigator.php'])	{
+if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest_RecordNavigator.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest_RecordNavigator.php']);
 }
 ?>

@@ -81,6 +81,22 @@ if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_c
 
 if ($typoVersion < '4006000') {
 	t3lib_extMgm::addPItoST43($_EXTKEY, 'pi/class.tx_ttguest.php', '', 'list_type', 1 /* cached */);
+
+	// Define database backend as backend for 4.5 and below (default in 4.6)
+	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['backend'])) {
+        $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['backend'] = 't3lib_cache_backend_DbBackend';
+    }
+	// Define data and tags table for 4.5 and below (obsolete in 4.6)
+	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options'])) {
+        $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options'] = array();
+    }
+	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options']['cacheTable'])) {
+        $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options']['cacheTable'] = 'tt_guest_cache';
+    }
+	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options']['tagsTable'])) {
+        $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options']['tagsTable'] = 'tt_guest_cache_tags';
+    }
+
 } else {
 	// add missing setup for the tt_content "list_type = 3" which is used by tt_guest
 	$addLine = 'tt_content.list.20.3 = < plugin.tt_guest';

@@ -1,3 +1,10 @@
+##
+## @package TYPO3
+## @subpackage tt_guest
+## @version $Id$
+##
+
+
 plugin.tt_guest {
     # cat=plugin.guestbook/spam; type=text; label= Spam words: Comma separated list of spam words. No message contaning one of these words will be stored.
   spamWords = cialis, viagra, valium, ROLEX, 0zu.tw, tramadol, phentermine, levitra, freeforen, kostenloses-forum, forum-on, fwef243, hk.pl, unlv.edu, iespana.es, ijijiji.com, elymdc.com, manx.com, qecn.com, cjxhn.com, skracaj.pl, fory.pl, michat.cl, spbgu.ru, dreipage.de, sistcma.org, liberiv553.org, fucking, free.of.pl, teen-girls, masturbating, lesbian, er9rori10.org, meranio68.org, cedarville.edu, sanzkdni59.org, flbuy.net, catanz1qaro.org, guestbook.at, yo24.pl, wovqmen12.org, doctorp.org, stpbudi24.org, ravennzna.org, forumbolt.com, bofnus23.org, wovqmen12.org, paradistc.org, word6.org, 706596.com, bugs.python.org, 0ep.net, snaw23.org, spod.cx, tinysite.info, 3x3.pl, easyfreeforum.com, blog.hr, myblogwiki.com, xfreeforum.com, freepowerboards.com, bofnus23.org, ovp.pl, jo.pl, fanforum.cc, bloguitos.com, Good site, meditjrraneo.org, 144338.com, fiyind83.org, gigcities.com, essmpio.org, statalev0.orgm, free-guestbook.net, kohukohu.com, doiop.com, rejardo2.org, fansubs.net, pc-community24.de, celenkano.org, res6zistenza.org, yj5t4hd.info, foorev.com, masta.org, bravehost.com, infantilelj62.org, crazypenis.net, meta.net, trad.org, cri4stiana99.org, mundoweblog.com, marftino9.org, google.com, Nice site, Cool site, Thank you, happyhost.org, blogspot.com, Thanks, probook.de, web1000.com, creatuforo.com, foren-gratis.de, prohosting.com, forospace.com, fast4me.info, teen girl, tit porn, iphorum.com, <a href=, iwannaforum.com, vjc.edu, newsletter, microbial-ecology, online poker, ad-pecjak.si, au.edu, nudist, fast4me.info, satanis.org, berkeley.edu, fflnuc.net, buy, y118.net, blue11.cn, kisswow.com.cn, ririwow.cn, winzipices.cn

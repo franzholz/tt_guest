@@ -1,3 +1,6 @@
+2012-01-23 Franz Holzinger <franz@ttproducts.de>
+	* use div2007 0.8.0
+
 2012-01-21 Franz Holzinger <franz@ttproducts.de>
 	* make PHP 5.2 a requirement
 	* ready for TYPO3 4.6

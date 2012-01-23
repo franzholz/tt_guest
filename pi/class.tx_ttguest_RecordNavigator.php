@@ -59,7 +59,7 @@ class tx_ttguest_RecordNavigator {
 	public $cObj = null; // for making typo3 links
 
 	/* constructor */
-	public function tx_ttguest_RecordNavigator($queryCount, $offset, $limiter, $scriptpath) {
+	public function tx_ttguest_RecordNavigator ($queryCount, $offset, $limiter, $scriptpath) {
 		$this->queryCount 	= $queryCount;
 		$this->offset 		= $offset;
 		$this->limiter		= $limiter;
@@ -69,7 +69,7 @@ class tx_ttguest_RecordNavigator {
 	}
 
 	/* create page # sequence */
-	public function createSequence() {
+	public function createSequence () {
 
 		$numPages = ceil($this->queryCount / $this->limiter);
 		$nextOffset = 0;
@@ -89,7 +89,7 @@ class tx_ttguest_RecordNavigator {
 	}
 
 	/* create offset link */
-	public function &createOffsetLink($newOffset, $label, $class) {
+	public function &createOffsetLink ($newOffset, $label, $class) {
 		global $TSFE;
 
 		$pA = array();
@@ -98,7 +98,7 @@ class tx_ttguest_RecordNavigator {
 		$pA['cHash'] = t3lib_div::shortMD5(serialize($pA));
 		unset($pA['encryptionKey']);
 
-		$rc = '<li'.($class ? ' class="' . $class . '"': '') . '>' .
+		$rc = '<li' . ($class ? ' class="' . $class . '"': '') . '>' .
 			$this->cObj->getTypoLink(
 				$label,
 				$TSFE->id,
@@ -110,18 +110,18 @@ class tx_ttguest_RecordNavigator {
 	}
 
 	/* create previous/next links */
-	function createPrevNext($prevLabel, $nextLabel) {
+	function createPrevNext ($prevLabel, $nextLabel) {
 
 		if((int) $this->offset != 0) {
 			$this->seqStr = $this->createOffsetLink($this->offset - $this->limiter, $prevLabel, 'prev') . $this->seqStr;
 		}
 		if($this->queryCount > ($this->offset + $this->limiter)) {
-			$this->seqStr = $this->seqStr.$this->createOffsetLink($this->offset + $this->limiter, $nextLabel, 'next');
+			$this->seqStr = $this->seqStr . $this->createOffsetLink($this->offset + $this->limiter, $nextLabel, 'next');
 		}
 	}
 
 	/* return full navigation string */
-	function getNavigator() {
+	function getNavigator () {
 		return '<ul class="prevnext">' . $this->seqStr . '</ul>';
 	}
 }

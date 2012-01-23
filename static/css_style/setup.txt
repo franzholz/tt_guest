@@ -11,7 +11,7 @@ includeLibs.ts_guest = EXT:tt_guest/pi/class.tx_ttguest.php
 ## Sets up the fields, that may be submitted in order to create items. Mandatory!
 FEData.tt_guest >
 FEData.tt_guest {
-  processScript = EXT:tt_guest/pi/guest_submit.inc
+  processScript = EXT:tt_guest/pi/guest_submit.php
   processScript.notifyEmail = {$plugin.tt_guest.notifyEmail}
   processScript.emailCheck = {$plugin.tt_guest.emailCheck}
   processScript.captcha = {$plugin.tt_guest.captcha}
@@ -44,7 +44,7 @@ plugin.tt_guest {
   code.field = select_key
   captcha = {$plugin.tt_guest.captcha}
 
-  limit = 8	
+  limit = 8
 
   # Global wraps
   wrap1.wrap = {$plugin.tt_guest.wrap1}
@@ -67,15 +67,15 @@ plugin.tt_guest {
   postform.data >
   postform.dataArray {
     10.label = Header:
-    10.type = *data[tt_guest][NEW][title]=input 
+    10.type = *data[tt_guest][NEW][title]=input
     20.label = Your comment:
     20.type = *data[tt_guest][NEW][note]=textarea
     30.label = Name:
-    30.type = *data[tt_guest][NEW][cr_name]=input 
+    30.type = *data[tt_guest][NEW][cr_name]=input
     40.label = Email:
     40.type = *data[tt_guest][NEW][cr_email]=input
     50.label = Homepage:
-    50.type = *data[tt_guest][NEW][www]=input 
+    50.type = *data[tt_guest][NEW][www]=input
     60.type = formtype_db=submit
     60.value = Add yourself
   }

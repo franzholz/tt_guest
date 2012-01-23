@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2012 Kasper Skårhøj (kasperYYYY@typo3.com)
+*  (c) 2012 Kasper Skårhøj (kasperYYYY@typo3.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,7 +25,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * guest_submit.inc
+ * guest_submit.php
  *
  * .notifyEmail =	email address that should be notified of submissions.
  * See TSref document / FEDATA section for details on how to use this script.
@@ -37,16 +37,22 @@
  */
 
 if (is_object($this)) {
+	global $TSFE;
+
+	$localCharset = $TSFE->localeCharset;
 	$conf = $this->getConf('tt_guest');
 	$row = $this->newData['tt_guest']['NEW'];
 
 	$email = $row['cr_email'];
-	if (!$conf['emailCheck'] || guestCheckEmail($email)) { // Added 02.06.2006 Nicolas Liaudat [mailing (at) pompiers-chatel.ch]
+	if (
+		!$conf['emailCheck'] ||
+		guestCheckEmail($email)
+	) { // Added 02.06.2006 Nicolas Liaudat [mailing (at) pompiers-chatel.ch]
 		if (is_array($row)) {
 
 			do {
 				$spamArray = t3lib_div::trimExplode(',', $conf['spamWords']);
-				$bSpamFound = false;
+				$bSpamFound = FALSE;
 				$internalFieldArray = array('hidden', 'pid', 'doublePostCheck', 'captcha');
 
 				if ($conf['captcha'] == 'freecap' && t3lib_extMgm::isLoaded('sr_freecap')) {
@@ -59,12 +65,12 @@ if (is_object($this)) {
 					}
 				}
 
-				foreach ($this->newData['tt_guest']['NEW'] as $field => $value) {
+				foreach ($row as $field => $value) {
 					if (!in_array($field, $internalFieldArray)) {
 						if (version_compare(phpversion(), '5.0.0', '>=')) {
 							foreach ($spamArray as $k => $word) {
-								if ($word && stripos($value, $word) !== false) {
-									$bSpamFound = true;
+								if ($word && stripos($value, $word) !== FALSE) {
+									$bSpamFound = TRUE;
 									break;
 								}
 							}
@@ -72,8 +78,8 @@ if (is_object($this)) {
 							foreach ($spamArray as $k => $word) {
 								$lWord = strtolower($word);
 								$lValue = strtolower($value);
-								if ($lWord && strpos($lValue, $lWord) !== false) {
-									$bSpamFound = true;
+								if ($lWord && strpos($lValue, $lWord) !== FALSE) {
+									$bSpamFound = TRUE;
 									break;
 								}
 							}
@@ -82,9 +88,10 @@ if (is_object($this)) {
 					if ($bSpamFound) {
 						break;
 					}
+					$row[$field] = ($localCharset ? $TSFE->csConvObj->conv($value, $TSFE->renderCharset, $localCharset) : $value);
 				}
 				if ($bSpamFound) {
-					$content = 'The spam word "'.$word.'" has been detected.';
+					$content = 'The spam word "' . $word . '" has been detected.';
 					$GLOBALS['TSFE']->printError($content);
 				} else {
 					$this->newData['tt_guest']['NEW']['cr_ip'] = t3lib_div::getIndpEnv('REMOTE_ADDR');
@@ -93,6 +100,7 @@ if (is_object($this)) {
 
 					if ($conf['notifyEmail']) {
 						$name = $this->newData['tt_guest']['NEW']['cr_name'];
+						$name = ($localCharset ? $TSFE->csConvObj->conv($name, $TSFE->renderCharset, $localCharset) : $name)
 						$email = $this->newData['tt_guest']['NEW']['cr_email'];
 
 						mail ($conf['notifyEmail'], 'tt_guest item submitted at ' . t3lib_div::getIndpEnv('HTTP_HOST'), '
@@ -117,32 +125,31 @@ if (is_object($this)) {
 
 
 // Added from Nicolas Liaudat
-function guestCheckEmail($email) {
+function guestCheckEmail ($email) {
 
-	if (!ereg('^[^@]{1,64}@[^@]{1,255}$', $email)) {
-		// Email invalid because wrong number of characters in one section, or wrong number of @ symbols.
-		return false;
+	if ($email != '' && !t3lib_div::validEmail($email)) {
+		return FALSE;
 	}
 
 	// gets domain name
-	list($username,$domain)=split('@',$email);
+	list($username, $domain) = explode('@', $email);
 	// checks for if MX records in the DNS
 	$mxhosts = array();
 	if(!getmxrr($domain, $mxhosts)) {
 		// no mx records, ok to check domain
-		if (@fsockopen($domain,25,$errno,$errstr,30)) {
-			return true;
+		if (@fsockopen($domain, 25, $errno, $errstr, 30)) {
+			return TRUE;
 		} else {
-			return false;
+			return FALSE;
 		}
 	} else {
 		// mx records found
 		foreach ($mxhosts as $host) {
-			if (@fsockopen($host,25,$errno,$errstr,30)) {
-				return true;
+			if (@fsockopen($host, 25, $errno, $errstr, 30)) {
+				return TRUE;
 			}
 		}
-		return false;
+		return FALSE;
 	}
 }
 

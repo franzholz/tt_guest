@@ -1,3 +1,6 @@
+2012-03-21 Franz Holzinger <franz@ttproducts.de>
+	* fix missing semicolon error in guest_submit.php
+
 2012-01-23 Franz Holzinger <franz@ttproducts.de>
 	* use div2007 0.8.0
 

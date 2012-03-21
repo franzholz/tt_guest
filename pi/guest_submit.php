@@ -100,7 +100,7 @@ if (is_object($this)) {
 
 					if ($conf['notifyEmail']) {
 						$name = $this->newData['tt_guest']['NEW']['cr_name'];
-						$name = ($localCharset ? $TSFE->csConvObj->conv($name, $TSFE->renderCharset, $localCharset) : $name)
+						$name = ($localCharset ? $TSFE->csConvObj->conv($name, $TSFE->renderCharset, $localCharset) : $name);
 						$email = $this->newData['tt_guest']['NEW']['cr_email'];
 
 						mail ($conf['notifyEmail'], 'tt_guest item submitted at ' . t3lib_div::getIndpEnv('HTTP_HOST'), '

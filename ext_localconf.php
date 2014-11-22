@@ -4,12 +4,6 @@ if (!defined ('TYPO3_MODE')) {
 	die ('Access denied.');
 }
 
-$typoVersion = (
-	class_exists('t3lib_utility_VersionNumber') ?
-		t3lib_utility_VersionNumber::convertVersionNumberToInteger(TYPO3_version) :
-		t3lib_div::int_from_ver(TYPO3_version)
-);
-
 $_EXTCONF = unserialize($_EXTCONF);    // unserializing the configuration so we can use it here:
 
 if (!defined ('TT_GUEST_EXTkey')) {
@@ -73,38 +67,18 @@ if (isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['livesearch']) && is_array($GLOBALS
 if (!is_array($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache'])) {
     $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache'] = array();
 }
+
 // Define string frontend as default frontend, this must be set with TYPO3 4.5 and below
 // and overrides the default variable frontend of 4.6
 if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['frontend'])) {
     $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['frontend'] = 't3lib_cache_frontend_StringFrontend';
 }
 
-if ($typoVersion < '4006000') {
-	t3lib_extMgm::addPItoST43($_EXTKEY, 'pi/class.tx_ttguest.php', '', 'list_type', 1 /* cached */);
-
-	// Define database backend as backend for 4.5 and below (default in 4.6)
-	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['backend'])) {
-        $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['backend'] = 't3lib_cache_backend_DbBackend';
-    }
-	// Define data and tags table for 4.5 and below (obsolete in 4.6)
-	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options'])) {
-        $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options'] = array();
-    }
-	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options']['cacheTable'])) {
-        $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options']['cacheTable'] = 'tt_guest_cache';
-    }
-	if (!isset($TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options']['tagsTable'])) {
-        $TYPO3_CONF_VARS['SYS']['caching']['cacheConfigurations']['tt_guest_cache']['options']['tagsTable'] = 'tt_guest_cache_tags';
-    }
-
-} else {
-	// add missing setup for the tt_content "list_type = 3" which is used by tt_guest
-	$addLine = 'tt_content.list.20.3 = < plugin.tt_guest';
-	t3lib_extMgm::addTypoScript(TT_GUEST_EXTkey, 'setup', '
-	# Setting ' . TT_GUEST_EXTkey . ' plugin TypoScript
-	' . $addLine . '
-	', 43);
-}
-
+// add missing setup for the tt_content "list_type = 3" which is used by tt_guest
+$addLine = 'tt_content.list.20.3 = < plugin.tt_guest';
+t3lib_extMgm::addTypoScript(TT_GUEST_EXTkey, 'setup', '
+# Setting ' . TT_GUEST_EXTkey . ' plugin TypoScript
+' . $addLine . '
+', 43);
 
 ?>

@@ -40,9 +40,6 @@
  */
 
 
-require_once(PATH_BE_div2007 . 'class.tx_div2007_alpha_language_base.php');
-
-
 class tx_ttguest_language extends tx_div2007_alpha_language_base {
 	public function init (&$pObj, &$cObj, &$conf, $scriptRelPath) {
 

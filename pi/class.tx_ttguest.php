@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012 Kasper Skårhøj <kasperYYYY@typo3.com>
+*  (c) 2014 Kasper Skårhøj <kasperYYYY@typo3.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -41,10 +41,6 @@
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
  * @author	Franz Holzinger <franz@ttproducts.de>
  */
-
-
-require_once(PATH_tslib . 'class.tslib_pibase.php');
-require_once(PATH_BE_ttguest . 'pi/class.tx_ttguest_RecordNavigator.php');
 
 
 class tx_ttguest extends tslib_pibase {
@@ -94,11 +90,6 @@ class tx_ttguest extends tslib_pibase {
 	 * @return	  void
  	 */
 	public function init (&$content, $conf, &$config, &$errorCode) {
-
-		t3lib_div::requireOnce(PATH_BE_div2007 . 'class.tx_div2007_alpha.php');
-		t3lib_div::requireOnce(PATH_BE_div2007 . 'class.tx_div2007_alpha5.php');
-		t3lib_div::requireOnce(PATH_BE_div2007 . 'class.tx_div2007_ff.php');
-		t3lib_div::requireOnce(PATH_BE_ttguest . 'model/class.tx_ttguest_language.php');
 
 		$langObj = &t3lib_div::getUserObj('&tx_ttguest_language');
 		$langObj->init($this, $this->cObj, $conf, 'pi/class.tx_ttguest.php');
@@ -190,7 +181,6 @@ class tx_ttguest extends tslib_pibase {
 
 		foreach($codes as $theCode) {
 			$theCode = (string) strtoupper(trim($theCode));
-debug ($theCode, '$theCode');
 			switch($theCode) {
 				case 'GUESTBOOK':
 					$lConf = $conf;
@@ -329,9 +319,7 @@ debug ($theCode, '$theCode');
 							'type' => '*data[tt_guest][NEW][captcha]=input,60'
 						);
 					}
-debug ($lConf, '$lConf');
 					$tmp = $cObj->FORM($lConf);
-debug ($tmp, '$tmp');
 					$content .= $tmp;
 				break;
 				default:	// 'HELP'
@@ -339,8 +327,6 @@ debug ($tmp, '$tmp');
 					$contentTmp = 'error';
 				break;
 			}
-
-debug ($contentTmp, '$contentTmp');
 
 			if ($contentTmp == 'error') {
 				if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
@@ -378,7 +364,6 @@ debug ($contentTmp, '$contentTmp');
 				break; // while
 			}
 		}
-debug ($content, 'ENDE $content');
 		$result = $this->pi_wrapInBaseClass($content);
 		return $result;
 	}

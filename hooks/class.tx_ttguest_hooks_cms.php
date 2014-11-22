@@ -39,8 +39,6 @@
  *
  */
 
-require_once(PATH_BE_div2007 . 'hooks/class.tx_div2007_hooks_cms.php');
-
 class tx_ttguest_hooks_cms extends tx_div2007_hooks_cms {
 	public $extKey = TT_GUEST_EXTkey;
 

@@ -42,14 +42,13 @@ if (is_object($this)) {
 	$localCharset = $TSFE->localeCharset;
 	$conf = $this->getConf('tt_guest');
 	$row = $this->newData['tt_guest']['NEW'];
-
 	$email = $row['cr_email'];
+
 	if (
 		!$conf['emailCheck'] ||
 		guestCheckEmail($email)
 	) { // Added 02.06.2006 Nicolas Liaudat [mailing (at) pompiers-chatel.ch]
 		if (is_array($row)) {
-
 			do {
 				$spamArray = t3lib_div::trimExplode(',', $conf['spamWords']);
 				$bSpamFound = FALSE;

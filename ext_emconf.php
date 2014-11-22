@@ -15,8 +15,8 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Simple guestbook with subject, comment, name, email and www.',
 	'category' => 'plugin',
 	'shy' => 0,
-	'version' => '1.3.1',
-	'dependencies' => 'cms,div2007',
+	'version' => '1.4.0',
+	'dependencies' => 'div2007,tslib_fetce',
 	'conflicts' => '',
 	'priority' => '',
 	'loadOrder' => '',
@@ -34,10 +34,10 @@ $EM_CONF[$_EXTKEY] = array(
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
-			'cms' => '',
-			'php' => '5.2.0-0.0.0',
-			'typo3' => '3.8.0-4.6.99',
-			'div2007' => '0.8.0-',
+			'php' => '5.3.0-5.5.99',
+			'typo3' => '6.1.0-6.2.99',
+			'div2007' => '1.0.2-0.0.0',
+			'tslib_fetce' => '',
 		),
 		'conflicts' => array(
 		),

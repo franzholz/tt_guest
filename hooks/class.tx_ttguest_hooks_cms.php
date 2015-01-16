@@ -40,7 +40,7 @@
  */
 
 class tx_ttguest_hooks_cms extends tx_div2007_hooks_cms {
-	public $extKey = TT_GUEST_EXTkey;
+	public $extKey = TT_GUEST_EXT;
 
 }
 

@@ -64,31 +64,14 @@ class tx_ttguest_wizicon {
 	 * @see SC_db_new_content_el::wizardArray()
 	 */
 	public function proc($wizardItems) {
-		global $LANG;
-
-			// Include the locallang information.
-		$LL = $this->includeLocalLang();
-
 			// Adding the item:
 		$wizardItems['plugins_ttguest'] = array(
-			'icon' => PATH_BE_ttguest_rel . 'guestbook.gif',
-			'title' => $LANG->getLLL('plugins_title', $LL),
-			'description' => $LANG->getLLL('plugins_description', $LL),
+			'icon' => PATH_BE_TTGUEST_REL . 'guestbook.gif',
+			'title' => $GLOBALS['LANG']->sL('LLL:EXT:' . TT_GUEST_EXT . '/locallang.php:plugins_title'),
+			'description' => $GLOBALS['LANG']->sL('LLL:EXT:' . TT_GUEST_EXT . '/locallang.php:plugins_description'),
 			'params' => '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=3&defVals[tt_content][select_key]=' . rawurlencode('GUESTBOOK, POSTFORM')
 		);
-
 		return $wizardItems;
-	}
-
-	/**
-	 * Include locallang file for the tt_guest book extension (containing the description and title for the element)
-	 *
-	 * @return	array		LOCAL_LANG array
-	 */
-	function includeLocalLang() {
-		$LOCAL_LANG = '';
-		include(PATH_BE_ttguest . 'locallang.php');
-		return $LOCAL_LANG;
 	}
 }
 

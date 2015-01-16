@@ -46,7 +46,7 @@
 class tx_ttguest extends tslib_pibase {
 	public $prefixId = 'tx_ttguest';	// Same as class name
 	public $scriptRelPath = 'pi/class.tx_ttguest.php';	// Path to this script relative to the extension dir.
-	public $extKey = TT_GUEST_EXTkey;	// The extension key.
+	public $extKey = TT_GUEST_EXT;	// The extension key.
 	public $cObj;			// The backReference to the mother cObj object set at call time
 	public $enableFields ='';		// The enablefields of the tt_guest table.
 	public $dontParseContent = 0;
@@ -113,7 +113,7 @@ class tx_ttguest extends tslib_pibase {
 				$this->conf['defaultCode'],
 				$this->cObj->data['pi_flexform'],
 				'display_mode',
-				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][TT_GUEST_EXTkey]['useFlexforms']
+				$GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][TT_GUEST_EXT]['useFlexforms']
 			);
 		} else {
 				 // 'CODE' decides what is rendered:
@@ -121,7 +121,7 @@ class tx_ttguest extends tslib_pibase {
 		}
 
 		if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
-			tx_div2007_alpha5::loadLL_fh002($langObj, 'EXT:' . TT_GUEST_EXTkey . '/pi/locallang.xml');
+			tx_div2007_alpha5::loadLL_fh002($langObj, 'EXT:' . TT_GUEST_EXT . '/pi/locallang.xml');
 		}
 
 			// globally substituted markers, fonts and colors.
@@ -332,15 +332,15 @@ class tx_ttguest extends tslib_pibase {
 				if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
 					$content .= tx_div2007_alpha::displayHelpPage_fh001(
 						$this,
-						$this->cObj->fileResource('EXT:' . TT_GUEST_EXTkey . '/pi/guest_help.tmpl'),
-						TT_GUEST_EXTkey,
+						$this->cObj->fileResource('EXT:' . TT_GUEST_EXT . '/pi/guest_help.tmpl'),
+						TT_GUEST_EXT,
 						$this->errorMessage,
 						$theCode
 					);
 					unset($this->errorMessage);
 				} else {
 					$langKey = strtoupper($GLOBALS['TSFE']->config['config']['language']);
-					$helpTemplate = $this->cObj->fileResource('EXT:' . TT_GUEST_EXTkey . '/pi/guest_help.tmpl');
+					$helpTemplate = $this->cObj->fileResource('EXT:' . TT_GUEST_EXT . '/pi/guest_help.tmpl');
 
 						// Get language version
 					$helpTemplate_lang = '';
@@ -358,7 +358,7 @@ class tx_ttguest extends tslib_pibase {
 
 						// Markers and substitution:
 					$markerArray['###CODE###'] = $theCode;
-					$markerArray['###PATH###'] = PATH_BE_ttguest;
+					$markerArray['###PATH###'] = PATH_BE_TTGUEST;
 					$content .= $this->cObj->substituteMarkerArray($helpTemplate, $markerArray);
 				}
 				break; // while

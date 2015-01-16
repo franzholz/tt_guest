@@ -6,16 +6,16 @@ $LOCAL_LANG = Array (
 		'plugins_description' => 'Adds a guestbook to the page.',
 	),
 	'dk' => Array (
-		'plugins_title' => 'Gæstebog',
-		'plugins_description' => 'Tilføjer en gæstebog til siden.',
+		'plugins_title' => 'GÃ¦stebog',
+		'plugins_description' => 'TilfÃ¸jer en gÃ¦stebog til siden.',
 	),
 	'de' => Array (
-		'plugins_title' => 'Gästebuch',
-		'plugins_description' => 'Fügt ein Gästebuch auf der Seite ein.',
+		'plugins_title' => 'GÃ¤stebuch',
+		'plugins_description' => 'FÃ¼gt ein GÃ¤stebuch auf der Seite ein.',
 	),
 	'no' => Array (
 		'plugins_title' => 'Gjestebok',
-		'plugins_description' => 'Setter inn en gjestebok på siden.',
+		'plugins_description' => 'Setter inn en gjestebok pÃ¥ siden.',
 	),
 	'it' => Array (
 		'plugins_title' => 'Guestbook',
@@ -30,12 +30,12 @@ $LOCAL_LANG = Array (
 		'plugins_description' => 'Toevoegen gastenboek op de pagina.',
 	),
 	'cz' => Array (
-		'plugins_title' => 'Kniha hostù',
-		'plugins_description' => 'Vloží knihu hostù na stránku.',
+		'plugins_title' => 'Kniha hostÃ¹',
+		'plugins_description' => 'VloÂžÃ­ knihu hostÃ¹ na strÃ¡nku.',
 	),
 	'pl' => Array (
-		'plugins_title' => 'Ksiêga go¶ci',
-		'plugins_description' => 'Dodaje ksiêgê go¶ci do strony',
+		'plugins_title' => 'KsiÃªga goÂ¶ci',
+		'plugins_description' => 'Dodaje ksiÃªgÃª goÂ¶ci do strony',
 	),
 	'si' => Array (
 		'plugins_title' => 'Knjiga gostov',
@@ -43,23 +43,23 @@ $LOCAL_LANG = Array (
 	),
 	'fi' => Array (
 		'plugins_title' => 'Vieraskirja',
-		'plugins_description' => 'Lisää vieraskirja sivulle.',
+		'plugins_description' => 'LisÃ¤Ã¤ vieraskirja sivulle.',
 	),
 	'tr' => Array (
-		'plugins_title' => 'Ziyaretçi defteri',
-		'plugins_description' => 'Sayfaya ziyaretçi defteri ekle.',
+		'plugins_title' => 'ZiyaretÃ§i defteri',
+		'plugins_description' => 'Sayfaya ziyaretÃ§i defteri ekle.',
 	),
 	'se' => Array (
-		'plugins_title' => 'Gästbok',
-		'plugins_description' => 'Lägger en gästbok på sidan.',
+		'plugins_title' => 'GÃ¤stbok',
+		'plugins_description' => 'LÃ¤gger en gÃ¤stbok pÃ¥ sidan.',
 	),
 	'pt' => Array (
 		'plugins_title' => 'Livro de Visitas',
-		'plugins_description' => 'Adicionar livro de visitas à página.',
+		'plugins_description' => 'Adicionar livro de visitas Ã  pÃ¡gina.',
 	),
 	'et' => Array (
-		'plugins_title' => 'Külalisteraamat',
-		'plugins_description' => 'Lisab külalisteraamatu lehele.',
+		'plugins_title' => 'KÃ¼lalisteraamat',
+		'plugins_description' => 'Lisab kÃ¼lalisteraamatu lehele.',
 	),
 );
 ?>

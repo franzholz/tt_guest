@@ -10,16 +10,16 @@ $LOCAL_LANG = Array (
 		'_.seeAlso' => 'tt_content:list_type',
 	),
 	'dk' => Array (
-		'.description' => 'Gæstebog',
-		'.details' => 'Denne tabel bruges af standard gæstebogen based på TypoScript. Alle emner i gæstebogen findes i denne tabel og du kan således administrere gæstebogen gennem backenden.',
+		'.description' => 'GÃ¦stebog',
+		'.details' => 'Denne tabel bruges af standard gÃ¦stebogen based pÃ¥ TypoScript. Alle emner i gÃ¦stebogen findes i denne tabel og du kan sÃ¥ledes administrere gÃ¦stebogen gennem backenden.',
 	),
 	'de' => Array (
-		'.description' => 'Gästebuch. ',
-		'.details' => 'Diese Tabelle wird von Gästebuch Extensions verwendet. Alle Einträge kommen in diese Tabelle. Daher können Sie jedes Gästebuch über dieses Backend administrieren.',
+		'.description' => 'GÃ¤stebuch. ',
+		'.details' => 'Diese Tabelle wird von GÃ¤stebuch Extensions verwendet. Alle EintrÃ¤ge kommen in diese Tabelle. Daher kÃ¶nnen Sie jedes GÃ¤stebuch Ã¼ber dieses Backend administrieren.',
 	),
 	'fr' => Array (
 		'.description' => 'Livre d\'or',
-		'.details' => 'Cette table est utilisée par l\'extension livre d\'or. Tous les enregistrements iront dans cette table, que vous pourrez administrer autravers de l\'interface administrateur.',
+		'.details' => 'Cette table est utilisÃ©e par l\'extension livre d\'or. Tous les enregistrements iront dans cette table, que vous pourrez administrer autravers de l\'interface administrateur.',
 	),
 );
 ?>

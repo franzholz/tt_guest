@@ -44,6 +44,10 @@ use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 
+use JambageCom\Div2007\Utility\TableUtility;
+
+
+
 class tx_ttguest extends tslib_pibase {
 	public $prefixId = 'tx_ttguest';	// Same as class name
 	public $scriptRelPath = 'pi/class.tx_ttguest.php';	// Path to this script relative to the extension dir.
@@ -69,7 +73,7 @@ class tx_ttguest extends tslib_pibase {
 
 			$errorCode = array();
 			$config = array();
-			$bDoProcessing = $this->init($content, $conf, $config, $errorCode);
+			$bDoProcessing = $this->init($conf, $config, $errorCode);
 
 			if ($bDoProcessing || count($errorCode)) {
 				$content = $this->run(get_class($this), $conf, $config, $errorCode, $content);
@@ -90,7 +94,7 @@ class tx_ttguest extends tslib_pibase {
 	 * @param		string		  modified configuration array
 	 * @return	  void
  	 */
-	public function init (&$content, $conf, &$config, &$errorCode) {
+	public function init ($conf, &$config, &$errorCode) {
 
 		$langObj = GeneralUtility::getUserObj('&tx_ttguest_language');
 		$langObj->init1($this, $this->cObj, $conf, 'pi/class.tx_ttguest.php');
@@ -116,9 +120,7 @@ class tx_ttguest extends tslib_pibase {
 			TRUE
 		);
 
-		if (ExtensionManagementUtility::isLoaded(DIV2007_EXT)) {
-			tx_div2007_alpha5::loadLL_fh002($langObj, 'EXT:' . TT_GUEST_EXT . '/pi/locallang.xml');
-		}
+		tx_div2007_alpha5::loadLL_fh002($langObj, 'EXT:' . TT_GUEST_EXT . '/pi/locallang.xml');
 
 			// globally substituted markers, fonts and colors.
 		$splitMark = md5(microtime());
@@ -138,7 +140,7 @@ class tx_ttguest extends tslib_pibase {
 		// *************************************
 		// *** doing the things...:
 		// *************************************
-		$this->enableFields = $this->cObj->enableFields('tt_guest');
+		$this->enableFields = TableUtility::enableFields('tt_guest');
 		$this->dontParseContent = $conf['dontParseContent'];
 		$this->recordCount = $this->getRecordCount($this->pid_list);
 		$globalMarkerArray['###PREVNEXT###'] = $this->getPrevNext();
@@ -150,7 +152,9 @@ class tx_ttguest extends tslib_pibase {
 				$globalMarkerArray
 			);
 
-		if ($this->conf['captcha'] == 'freecap' && ExtensionManagementUtility::isLoaded('sr_freecap') ) {
+		if (
+			$this->conf['captcha'] == 'freecap' && ExtensionManagementUtility::isLoaded('sr_freecap')
+		) {
 			require_once(ExtensionManagementUtility::extPath('sr_freecap') . 'pi2/class.tx_srfreecap_pi2.php');
 			$this->freeCap = GeneralUtility::getUserObj('&tx_srfreecap_pi2');
 		}
@@ -159,7 +163,7 @@ class tx_ttguest extends tslib_pibase {
 	}
 
 
-	public function &run ($pibaseClass, $conf, $config, &$errorCode, $content = '') {
+	public function run ($pibaseClass, $conf, $config, &$errorCode, $content = '') {
 
 		$cObj = GeneralUtility::makeInstance('tslib_cObj');	// Initiate new cObj, because we're loading the data-array
 		$alternativeLayouts = intval($conf['alternatingLayouts']) > 0 ? intval($conf['alternatingLayouts']) : 2;
@@ -327,7 +331,8 @@ class tx_ttguest extends tslib_pibase {
 			if ($contentTmp == 'error') {
 				if (ExtensionManagementUtility::isLoaded(DIV2007_EXT)) {
 					$content .= tx_div2007_alpha5::displayHelpPage_fh003(
-						$this,
+						$langObj,
+						$this->cObj,
 						$this->cObj->fileResource('EXT:' . TT_GUEST_EXT . '/pi/guest_help.tmpl'),
 						TT_GUEST_EXT,
 						$this->errorMessage,
@@ -336,7 +341,10 @@ class tx_ttguest extends tslib_pibase {
 					unset($this->errorMessage);
 				} else {
 					$langKey = strtoupper($GLOBALS['TSFE']->config['config']['language']);
-					$helpTemplate = $this->cObj->fileResource('EXT:' . TT_GUEST_EXT . '/pi/guest_help.tmpl');
+					$helpTemplate =
+						$this->cObj->fileResource(
+							'EXT:' . TT_GUEST_EXT . '/pi/guest_help.tmpl'
+						);
 
 						// Get language version
 					$helpTemplate_lang = '';
@@ -347,15 +355,23 @@ class tx_ttguest extends tslib_pibase {
 								'###TEMPLATE_' . $langKey . '###'
 							);
 					}
+
 					$helpTemplate =
 						$helpTemplate_lang ?
 							$helpTemplate_lang :
-							$this->cObj->getSubpart($helpTemplate, '###TEMPLATE_DEFAULT###');
+							$this->cObj->getSubpart(
+								$helpTemplate,
+								'###TEMPLATE_DEFAULT###'
+							);
 
 						// Markers and substitution:
 					$markerArray['###CODE###'] = $theCode;
 					$markerArray['###PATH###'] = PATH_BE_TTGUEST;
-					$content .= $this->cObj->substituteMarkerArray($helpTemplate, $markerArray);
+					$content .=
+						$this->cObj->substituteMarkerArray(
+							$helpTemplate,
+							$markerArray
+						);
 				}
 				break; // while
 			}
@@ -368,7 +384,7 @@ class tx_ttguest extends tslib_pibase {
 	/**
 	 * Main guestbook function.
 	 */
-	public function getLayouts($templateCode, $alternativeLayouts, $marker) {
+	public function getLayouts ($templateCode, $alternativeLayouts, $marker) {
 		$out = array();
 		for($a = 0; $a < $alternativeLayouts; $a++) {
 			$m = '###' . $marker . ($a ? '_' . $a : '') . '###';
@@ -385,9 +401,7 @@ class tx_ttguest extends tslib_pibase {
 	/**
 	 * Main guestbook function.
 	 */
-	public function getItems($pid) {
-		global $TYPO3_DB;
-
+	public function getItems ($pid) {
 		if(!isset($_REQUEST['offset'])) {
 			$offset = 0;
 		}
@@ -395,7 +409,7 @@ class tx_ttguest extends tslib_pibase {
 			$offset = (int) $_REQUEST['offset'];
 		}
 
-		$res = $TYPO3_DB->exec_SELECTquery(
+		$out = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
 			'*',
 			'tt_guest',
 			'pid IN (' . $pid . ')' . $this->enableFields,
@@ -404,10 +418,6 @@ class tx_ttguest extends tslib_pibase {
 			$offset . ', ' . $this->conf['limit']
 		);
 
-		$out = array();
-		while($row = $TYPO3_DB->sql_fetch_assoc($res)) {
-			$out[] = $row;
-		}
 		return $out;
 	}
 
@@ -415,7 +425,7 @@ class tx_ttguest extends tslib_pibase {
 	/**
 	 * Main guestbook function.
 	 */
-	public function formatStr($str) {
+	public function formatStr ($str) {
 		if (!$this->dontParseContent) {
 			return nl2br(htmlspecialchars($str));
 		} else {
@@ -424,7 +434,7 @@ class tx_ttguest extends tslib_pibase {
 	}
 
 
-	public function getRecordCount($pid) {
+	public function getRecordCount ($pid) {
 		$thecount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
 			'*',
 			'tt_guest',
@@ -434,7 +444,7 @@ class tx_ttguest extends tslib_pibase {
 		return $thecount;
 	}
 
-	public function getPrevNext() {
+	public function getPrevNext () {
 		$langObj = GeneralUtility::getUserObj('&tx_ttguest_language');
 
 		$nav = GeneralUtility::makeInstance(
@@ -460,10 +470,5 @@ class tx_ttguest extends tslib_pibase {
 		$result = $nav->getNavigator();
 		return $result;
 	}
-}
-
-
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest.php']);
 }
 

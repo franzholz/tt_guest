@@ -29,8 +29,6 @@
  *
  * hook functions for the TYPO3 cms
  *
- * $Id$
- *
  * @author	Franz Holzinger <franz@ttproducts.de>
  * @maintainer	Franz Holzinger <franz@ttproducts.de>
  * @package TYPO3
@@ -44,9 +42,3 @@ class tx_ttguest_hooks_cms extends tx_div2007_hooks_cms {
 
 }
 
-
-if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/tt_guest/hooks/class.tx_ttguest_hooks_cms.php']) {
-	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/tt_guest/hooks/class.tx_ttguest_hooks_cms.php']);
-}
-
-?>

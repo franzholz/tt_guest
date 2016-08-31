@@ -1,6 +1,7 @@
 2016-08-31 Franz Holzinger <franz@ttproducts.de>
 	* bugfix: text and blob must have a default null value by TCA and not by SQL
 	* remove the cache tables which are needed only for TYPO3 4.3 - 4.5
+	* remove the TYPO3 4.5 XCLASS statements at the end of the PHP files
 
 2016-08-04 Franz Holzinger <franz@fholzinger.com>
 	* ready for TYPO3 7.6.10 and PHP 7

@@ -49,13 +49,13 @@
 use \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class tx_ttguest_RecordNavigator {
-	public $queryCount;
-	public $offset;
-	public $limiter;
-	public $seqStr;
-	public $scriptPath;
+	protected $queryCount;
+	protected $offset;
+	protected $limiter;
+	protected $seqStr;
+	protected $scriptPath;
 
-	public $cObj = null; // for making typo3 links
+	protected $cObj = null; // for making typo3 links
 
 	/* constructor */
 	public function __construct ($queryCount, $offset, $limiter, $scriptpath) {
@@ -100,7 +100,8 @@ class tx_ttguest_RecordNavigator {
 				$label,
 				$GLOBALS['TSFE']->id,
 				$pA,
-				'') .
+				''
+			) .
 			'</li>';
 
 		return $rc;
@@ -118,6 +119,7 @@ class tx_ttguest_RecordNavigator {
 				) .
 				$this->seqStr;
 		}
+
 		if ($this->queryCount > ($this->offset + $this->limiter)) {
 			$this->seqStr =
 				$this->seqStr .
@@ -135,7 +137,4 @@ class tx_ttguest_RecordNavigator {
 	}
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest_RecordNavigator.php']) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest_RecordNavigator.php']);
-}
 

@@ -29,8 +29,6 @@
  *
  * language object
  *
- * $Id$
- *
  * @author	Franz Holzinger <franz@ttproducts.de>
  * @maintainer	Franz Holzinger <franz@ttproducts.de>
  * @package TYPO3
@@ -41,7 +39,7 @@
 
 
 class tx_ttguest_language extends tx_div2007_alpha_language_base {
-	public function init (&$pObj, &$cObj, &$conf, $scriptRelPath) {
+	public function init1 ($pObj, &$cObj, &$conf, $scriptRelPath) {
 
 		parent::init(
 			$cObj,
@@ -67,5 +65,3 @@ if (defined('TYPO3_MODE') && $GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['
 	include_once($GLOBALS['TYPO3_CONF_VARS'][TYPO3_MODE]['XCLASS']['ext/tt_guest/model/class.tx_ttguest_language.php']);
 }
 
-
-?>

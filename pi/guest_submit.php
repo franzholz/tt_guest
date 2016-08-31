@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012 Kasper Skårhøj (kasperYYYY@typo3.com)
+*  (c) 2016 Kasper Skårhøj (kasperYYYY@typo3.com)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -30,36 +30,43 @@
  * .notifyEmail =	email address that should be notified of submissions.
  * See TSref document / FEDATA section for details on how to use this script.
  * The static template 'plugin.tt_guest' provides a working example of configuration.
- * $Id$*
+ * $Id: guest_submit.php 86950 2014-11-22 12:01:23Z franzholz $*
  *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
  * @author	Nicolas Liaudat <mailing (at) pompiers-chatel.ch>
  */
 
-if (is_object($this)) {
-	global $TSFE;
 
-	$localCharset = $TSFE->localeCharset;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Messaging\ErrorpageMessage;
+
+
+if (is_object($this)) {
+
+	$localCharset = $GLOBALS['TSFE']->localeCharset;
 	$conf = $this->getConf('tt_guest');
 	$row = $this->newData['tt_guest']['NEW'];
 	$email = $row['cr_email'];
+	$allowed = TRUE;
+	$message = '';
 
 	if (
 		!$conf['emailCheck'] ||
-		guestCheckEmail($email)
+		($allowed = \JambageCom\Div2007\Utility\MailUtility::checkMXRecord($email))
 	) { // Added 02.06.2006 Nicolas Liaudat [mailing (at) pompiers-chatel.ch]
 		if (is_array($row)) {
 			do {
-				$spamArray = t3lib_div::trimExplode(',', $conf['spamWords']);
+				$spamArray = GeneralUtility::trimExplode(',', $conf['spamWords']);
 				$bSpamFound = FALSE;
 				$internalFieldArray = array('hidden', 'pid', 'doublePostCheck', 'captcha');
 
-				if ($conf['captcha'] == 'freecap' && t3lib_extMgm::isLoaded('sr_freecap')) {
-					require_once(t3lib_extMgm::extPath('sr_freecap') . 'pi2/class.tx_srfreecap_pi2.php');
-					$freeCapObj = &t3lib_div::getUserObj('&tx_srfreecap_pi2');
+				if ($conf['captcha'] == 'freecap' && ExtensionManagementUtility::isLoaded('sr_freecap')) {
+					require_once(ExtensionManagementUtility::extPath('sr_freecap') . 'pi2/class.tx_srfreecap_pi2.php');
+					$freeCapObj = GeneralUtility::getUserObj('&tx_srfreecap_pi2');
 					if (!$freeCapObj->checkWord($row['captcha'])) {
-						$content = 'Wrong captcha word entered';
-						$GLOBALS['TSFE']->printError($content);
+						$allowed = FALSE;
+						$message = 'Wrong captcha word entered';
 						break;
 					}
 				}
@@ -87,27 +94,28 @@ if (is_object($this)) {
 					if ($bSpamFound) {
 						break;
 					}
-					$row[$field] = ($localCharset ? $TSFE->csConvObj->conv($value, $TSFE->renderCharset, $localCharset) : $value);
+					$row[$field] = ($localCharset ? $GLOBALS['TSFE']->csConvObj->conv($value, $GLOBALS['TSFE']->renderCharset, $localCharset) : $value);
 				}
 				if ($bSpamFound) {
-					$content = 'The spam word "' . $word . '" has been detected.';
-					$GLOBALS['TSFE']->printError($content);
+					$allowed = FALSE;
+					$message = 'The spam word "' . $word . '" has been detected.';
+					break;
 				} else {
-					$this->newData['tt_guest']['NEW']['cr_ip'] = t3lib_div::getIndpEnv('REMOTE_ADDR');
+					$this->newData['tt_guest']['NEW']['cr_ip'] = GeneralUtility::getIndpEnv('REMOTE_ADDR');
 					$this->execNEWinsert('tt_guest', $this->newData['tt_guest']['NEW']);
 					$this->clear_cacheCmd(intval($this->newData['tt_guest']['NEW']['pid']));
 
 					if ($conf['notifyEmail']) {
 						$name = $this->newData['tt_guest']['NEW']['cr_name'];
-						$name = ($localCharset ? $TSFE->csConvObj->conv($name, $TSFE->renderCharset, $localCharset) : $name);
+						$name = ($localCharset ? $GLOBALS['TSFE']->csConvObj->conv($name, $GLOBALS['TSFE']->renderCharset, $localCharset) : $name);
 						$email = $this->newData['tt_guest']['NEW']['cr_email'];
 
-						mail ($conf['notifyEmail'], 'tt_guest item submitted at ' . t3lib_div::getIndpEnv('HTTP_HOST'), '
+						mail ($conf['notifyEmail'], 'tt_guest item submitted at ' . GeneralUtility::getIndpEnv('HTTP_HOST'), '
 			Page-id, tt_guest: ' . $this->newData['tt_guest']['NEW'][pid] . '
 			Current page uid/title: ' . $GLOBALS['TSFE']->page[title] . '/' . $GLOBALS['TSFE']->page[uid] . '
 			Name: ' . $name . '
 			Email: ' . $email . '
-			IP Address: ' . t3lib_div::getIndpEnv('REMOTE_ADDR') . '
+			IP Address: ' . GeneralUtility::getIndpEnv('REMOTE_ADDR') . '
 			Message: ' . $this->newData['tt_guest']['NEW']['title'] . '
 			' . $this->newData['tt_guest']['NEW']['note'] . '
 
@@ -116,40 +124,19 @@ if (is_object($this)) {
 				}
 			} while (1 == 0);	// only once
 		}
-	} else {
-		$content = $email . ' is not a valid email address.';
-		$GLOBALS['TSFE']->printError($content);
+	}
+
+	if (
+		!$allowed
+	) {
+		if ($message == '') {
+			$message = $email . ' is not a valid email address.';
+		}
+
+		$title = 'Entry denied!';
+		$messagePage = GeneralUtility::makeInstance(ErrorpageMessage::class, $message, $title);
+		$messagePage->output();
 	}
 }
 
 
-// Added from Nicolas Liaudat
-function guestCheckEmail ($email) {
-
-	if ($email != '' && !t3lib_div::validEmail($email)) {
-		return FALSE;
-	}
-
-	// gets domain name
-	list($username, $domain) = explode('@', $email);
-	// checks for if MX records in the DNS
-	$mxhosts = array();
-	if(!getmxrr($domain, $mxhosts)) {
-		// no mx records, ok to check domain
-		if (@fsockopen($domain, 25, $errno, $errstr, 30)) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
-	} else {
-		// mx records found
-		foreach ($mxhosts as $host) {
-			if (@fsockopen($host, 25, $errno, $errstr, 30)) {
-				return TRUE;
-			}
-		}
-		return FALSE;
-	}
-}
-
-?>

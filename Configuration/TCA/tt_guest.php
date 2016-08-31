@@ -1,79 +1,101 @@
 <?php
 
+
 // ******************************************************************
-// This is the standard TypoScript guestbook
+// This is the standard guestbook
 // ******************************************************************
-$TCA['tt_guest'] = Array (
-	'ctrl' => $TCA['tt_guest']['ctrl'],
-	'interface' => Array (
+$result = array(
+	'ctrl' => array (
+		'label' => 'title',
+		'default_sortby' => 'ORDER BY crdate DESC',
+		'tstamp' => 'tstamp',
+		'crdate' => 'crdate',
+		'delete' => 'deleted',
+		'prependAtCopy' => 'LLL:EXT:lang/locallang_general.php:LGL.prependAtCopy',
+		'enablecolumns' => array (
+			'disabled' => 'hidden'
+		),
+		'title' => 'LLL:EXT:' . TT_GUEST_EXT . '/locallang_tca.php:tt_content.list_type_pi',
+		'iconfile' => PATH_BE_TTGUEST_REL . 'ext_icon.gif',
+	),
+	'interface' => array (
 		'showRecordFieldList' => 'title,cr_name,cr_email,note,www,cr_ip,hidden'
 	),
-	'columns' => Array (
-		'title' => Array (
+	'columns' => array (
+		'title' => array (
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.title',
-			'config' => Array (
+			'config' => array (
 				'type' => 'input',
 				'size' => '40',
-				'max' => '256'
+				'max' => '256',
+				'eval' => 'null',
+				'default' => NULL,
 			)
 		),
-		'note' => Array (
+		'note' => array (
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.note',
-			'config' => Array (
+			'config' => array (
 				'type' => 'text',
 				'cols' => '40',
-				'rows' => '5'
+				'rows' => '5',
+				'eval' => 'null',
+				'default' => NULL,
 			)
 		),
-		'cr_name' => Array (
+		'cr_name' => array (
 			'label' => 'LLL:EXT:tt_guest/locallang_tca.php:tt_guest.cr_name',
-			'config' => Array (
+			'config' => array (
 				'type' => 'input',
 				'size' => '40',
 				'eval' => 'trim',
 				'max' => '80'
 			)
 		),
-		'cr_email' => Array (
+		'cr_email' => array (
 			'label' => 'LLL:EXT:tt_guest/locallang_tca.php:tt_guest.cr_email',
-			'config' => Array (
+			'config' => array (
 				'type' => 'input',
 				'size' => '40',
 				'eval' => 'trim',
 				'max' => '80'
 			)
 		),
-		'www' => Array (
+		'www' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.www',
-			'config' => Array (
+			'config' => array (
 				'type' => 'input',
 				'eval' => 'trim',
 				'size' => '20',
-				'max' => '256'
+				'max' => '256',
+				'eval' => 'null',
+				'default' => NULL,
 			)
 		),
-		'cr_ip' => Array (
+		'cr_ip' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:tt_guest/locallang_tca.php:tt_guest.cr_ip',
-			'config' => Array (
+			'config' => array (
 				'type' => 'input',
 				'size' => '15',
 				'max' => '15',
 			)
 		),
-		'hidden' => Array (
+		'hidden' => array (
 			'exclude' => 1,
 			'label' => 'LLL:EXT:lang/locallang_general.php:LGL.hidden',
-			'config' => Array (
+			'config' => array (
 				'type' => 'check',
 				'default' => '1'
 			)
 		)
 	),
-	'types' => Array (
-		'0' => Array('showitem' => 'hidden;;;;1-1-1, title;;;;3-3-3, note, cr_name, cr_email, www, cr_ip')
+	'types' => array (
+		'0' => array('showitem' => 'hidden;;;;1-1-1, title;;;;3-3-3, note, cr_name, cr_email, www, cr_ip')
 	)
 );
 
-?>
+
+return $result;
+
+

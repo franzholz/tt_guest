@@ -2,12 +2,6 @@
 
 ########################################################################
 # Extension Manager/Repository config file for ext "tt_guest".
-#
-# Auto generated 21-03-2012 14:50
-#
-# Manual updates:
-# Only the data in the array - everything else is removed by next
-# writing. "version" and "dependencies" must not be touched!
 ########################################################################
 
 $EM_CONF[$_EXTKEY] = array(
@@ -15,7 +9,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Simple guestbook with subject, comment, name, email and www.',
 	'category' => 'plugin',
 	'shy' => 0,
-	'version' => '1.4.1',
+	'version' => '1.5.0',
 	'dependencies' => 'div2007,tslib_fetce',
 	'conflicts' => '',
 	'priority' => '',
@@ -34,10 +28,10 @@ $EM_CONF[$_EXTKEY] = array(
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
-			'php' => '5.3.0-5.6.99',
-			'typo3' => '6.1.0-6.2.99',
-			'div2007' => '1.0.2-0.0.0',
-			'tslib_fetce' => '',
+			'php' => '5.3.0-7.99.99',
+			'typo3' => '6.1.0-7.99.99',
+			'div2007' => '1.6.15-0.0.0',
+			'tslib_fetce' => '0.1.0-0.9.0',
 		),
 		'conflicts' => array(
 		),
@@ -49,4 +43,3 @@ $EM_CONF[$_EXTKEY] = array(
 	),
 );
 
-?>

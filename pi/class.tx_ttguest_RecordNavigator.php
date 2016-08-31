@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012 Kasper Skårhøj <kasperYYYY@typo3.com>
+*  (c) 2016 Kasper SkÃ¥rhÃ¸j <kasperYYYY@typo3.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -42,12 +42,11 @@
  * $RN->createPrevNext("previous", "next");
  * echo($RN->getNavigator());
  *
- * $Id$
- *
- * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
+ * @author	Kasper SkÃ¥rhÃ¸j <kasperYYYY@typo3.com>
  * @author	Franz Holzinger <franz@ttproducts.de>
  */
 
+use \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class tx_ttguest_RecordNavigator {
 	public $queryCount;
@@ -59,13 +58,13 @@ class tx_ttguest_RecordNavigator {
 	public $cObj = null; // for making typo3 links
 
 	/* constructor */
-	public function tx_ttguest_RecordNavigator ($queryCount, $offset, $limiter, $scriptpath) {
+	public function __construct ($queryCount, $offset, $limiter, $scriptpath) {
 		$this->queryCount 	= $queryCount;
 		$this->offset 		= $offset;
 		$this->limiter		= $limiter;
 		$this->scriptPath 	= $scriptpath;
 
-		$this->cObj = new tslib_cObj();
+		$this->cObj = new ContentObjectRenderer();
 	}
 
 	/* create page # sequence */
@@ -89,19 +88,17 @@ class tx_ttguest_RecordNavigator {
 	}
 
 	/* create offset link */
-	public function &createOffsetLink ($newOffset, $label, $class) {
-		global $TSFE;
-
+	public function createOffsetLink ($newOffset, $label, $class) {
 		$pA = array();
 		$addQueryParams = '&offset=' . $newOffset;
-		$pA = t3lib_div::cHashParams($addQueryParams . $TSFE->linkVars);
+		$pA = t3lib_div::cHashParams($addQueryParams . $GLOBALS['TSFE']->linkVars);
 		$pA['cHash'] = t3lib_div::shortMD5(serialize($pA));
 		unset($pA['encryptionKey']);
 
 		$rc = '<li' . ($class ? ' class="' . $class . '"': '') . '>' .
 			$this->cObj->getTypoLink(
 				$label,
-				$TSFE->id,
+				$GLOBALS['TSFE']->id,
 				$pA,
 				'') .
 			'</li>';
@@ -110,18 +107,30 @@ class tx_ttguest_RecordNavigator {
 	}
 
 	/* create previous/next links */
-	function createPrevNext ($prevLabel, $nextLabel) {
+	public function createPrevNext ($prevLabel, $nextLabel) {
 
-		if((int) $this->offset != 0) {
-			$this->seqStr = $this->createOffsetLink($this->offset - $this->limiter, $prevLabel, 'prev') . $this->seqStr;
+		if ((int) $this->offset != 0) {
+			$this->seqStr =
+				$this->createOffsetLink(
+					$this->offset - $this->limiter,
+					$prevLabel,
+					'prev'
+				) .
+				$this->seqStr;
 		}
-		if($this->queryCount > ($this->offset + $this->limiter)) {
-			$this->seqStr = $this->seqStr . $this->createOffsetLink($this->offset + $this->limiter, $nextLabel, 'next');
+		if ($this->queryCount > ($this->offset + $this->limiter)) {
+			$this->seqStr =
+				$this->seqStr .
+				$this->createOffsetLink(
+					$this->offset + $this->limiter,
+					$nextLabel,
+					'next'
+				);
 		}
 	}
 
 	/* return full navigation string */
-	function getNavigator () {
+	public function getNavigator () {
 		return '<ul class="prevnext">' . $this->seqStr . '</ul>';
 	}
 }
@@ -130,4 +139,3 @@ if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_gues
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/tt_guest/pi/class.tx_ttguest_RecordNavigator.php']);
 }
 
-?>

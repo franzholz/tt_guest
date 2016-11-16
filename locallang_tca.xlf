@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-11-16T14:20:27Z" product-name="tt_guest">
+		<header/>
+		<body>
+			<trans-unit id="pi" xml:space="preserve">
+				<source>Guestbook</source>
+			</trans-unit>
+			<trans-unit id="tt_guest.cr_name" xml:space="preserve">
+				<source>Sender Name:</source>
+			</trans-unit>
+			<trans-unit id="tt_guest.cr_email" xml:space="preserve">
+				<source>Sender Email:</source>
+			</trans-unit>
+			<trans-unit id="tt_guest.cr_ip" xml:space="preserve">
+				<source>Sender IP address</source>
+			</trans-unit>
+			<trans-unit id="tt_content.pi_flexform.display_mode" xml:space="preserve">
+				<source>Display mode</source>
+			</trans-unit>
+			<trans-unit id="tt_content.pi_flexform.display_mode.1" xml:space="preserve">
+				<source>Guestbook list</source>
+			</trans-unit>
+			<trans-unit id="tt_content.pi_flexform.display_mode.2" xml:space="preserve">
+				<source>Data entry form</source>
+			</trans-unit>
+			<trans-unit id="tt_content.list_type_pi" xml:space="preserve">
+				<source>Guestbook</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

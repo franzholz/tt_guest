@@ -15,7 +15,7 @@ $result = array(
 		'enablecolumns' => array (
 			'disabled' => 'hidden'
 		),
-		'title' => 'LLL:EXT:' . TT_GUEST_EXT . '/locallang_tca.php:tt_content.list_type_pi',
+		'title' => 'LLL:EXT:' . TT_GUEST_EXT . '/locallang_tca.xlf:tt_content.list_type_pi',
 		'iconfile' => PATH_BE_TTGUEST_REL . 'ext_icon.gif',
 	),
 	'interface' => array (
@@ -43,7 +43,7 @@ $result = array(
 			)
 		),
 		'cr_name' => array (
-			'label' => 'LLL:EXT:tt_guest/locallang_tca.php:tt_guest.cr_name',
+			'label' => 'LLL:EXT:tt_guest/locallang_tca.xlf:tt_guest.cr_name',
 			'config' => array (
 				'type' => 'input',
 				'size' => '40',
@@ -52,7 +52,7 @@ $result = array(
 			)
 		),
 		'cr_email' => array (
-			'label' => 'LLL:EXT:tt_guest/locallang_tca.php:tt_guest.cr_email',
+			'label' => 'LLL:EXT:tt_guest/locallang_tca.xlf:tt_guest.cr_email',
 			'config' => array (
 				'type' => 'input',
 				'size' => '40',
@@ -74,7 +74,7 @@ $result = array(
 		),
 		'cr_ip' => array (
 			'exclude' => 1,
-			'label' => 'LLL:EXT:tt_guest/locallang_tca.php:tt_guest.cr_ip',
+			'label' => 'LLL:EXT:tt_guest/locallang_tca.xlf:tt_guest.cr_ip',
 			'config' => array (
 				'type' => 'input',
 				'size' => '15',

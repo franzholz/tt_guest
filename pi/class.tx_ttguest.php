@@ -34,7 +34,7 @@
  * - See TS_ref.pdf
  *
  * Other resources:
- * 'guest_submit.inc' is used for submission of the guest book entries to the database. This is done through the FEData TypoScript object. See the file 'ext_typoscript_setup.txt' for an example of how to set this up.
+ * 'guest_submit.inc' is used for submission of the guest book entries to the database. This is done through the FEData TypoScript object. See the file 'tt_guest/Configuration/TypoScript/Default/setup.txt' for an example of how to set this up.
  *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
  * @author	Franz Holzinger <franz@ttproducts.de>
@@ -120,7 +120,7 @@ class tx_ttguest extends tslib_pibase {
 			TRUE
 		);
 
-		tx_div2007_alpha5::loadLL_fh002($langObj, 'EXT:' . TT_GUEST_EXT . '/pi/locallang.xml');
+		tx_div2007_alpha5::loadLL_fh002($langObj, 'EXT:' . TT_GUEST_EXT . '/pi/locallang.xlf');
 
 			// globally substituted markers, fonts and colors.
 		$splitMark = md5(microtime());

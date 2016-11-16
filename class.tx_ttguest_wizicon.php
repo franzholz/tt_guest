@@ -27,8 +27,6 @@
 /**
  * Class, containing function for adding an element to the content element wizard.
  *
- * $Id$
- *
  * @author	Kasper Skaarhoj <kasperYYYY@typo3.com>
  */
 /**

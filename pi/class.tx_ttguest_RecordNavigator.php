@@ -90,21 +90,20 @@ class tx_ttguest_RecordNavigator {
 	/* create offset link */
 	public function createOffsetLink ($newOffset, $label, $class) {
 		$pA = array();
-		$addQueryParams = '&offset=' . $newOffset;
-		$pA = t3lib_div::cHashParams($addQueryParams . $GLOBALS['TSFE']->linkVars);
-		$pA['cHash'] = t3lib_div::shortMD5(serialize($pA));
-		unset($pA['encryptionKey']);
+		$addQueryParams = '&offset=' . $newOffset . $GLOBALS['TSFE']->linkVars;
 
-		$rc = '<li' . ($class ? ' class="' . $class . '"': '') . '>' .
-			$this->cObj->getTypoLink(
-				$label,
-				$GLOBALS['TSFE']->id,
-				$pA,
-				''
-			) .
+		$pageLink = tx_div2007_alpha5::getTypoLink_URL_fh003(
+			$this->cObj,
+			$GLOBALS['TSFE']->id,
+			$addQueryParams
+		);
+
+		$result = '<li' . ($class ? ' class="' . $class . '"': '') . '>' .
+			'<a href="' . htmlspecialchars($pageLink) . '"' . '>' .
+			htmlspecialchars($label) . '</a>' .
 			'</li>';
 
-		return $rc;
+		return $result;
 	}
 
 	/* create previous/next links */

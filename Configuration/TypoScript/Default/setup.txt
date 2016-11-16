@@ -1,7 +1,6 @@
 ##
 ## @package TYPO3
 ## @subpackage tt_guest
-## @version $Id$
 ##
 
 ## Includes the guestLib:
@@ -22,9 +21,9 @@ FEData.tt_guest {
   allowNew {
     title = 1
     note = 1
-    cr_name=1
-    cr_email=1
-    www=1
+    cr_name = 1
+    cr_email = 1
+    www = 1
     captcha = 1
   }
   autoInsertPID = 1
@@ -79,10 +78,11 @@ plugin.tt_guest {
     60.type = formtype_db=submit
     60.value = Add yourself
   }
-  postform.no_cache=1
+  postform.no_cache = 1
 }
 
 ## This enables the tt_content.record item to display guestbook items:
 tt_guest >
 tt_guest = < plugin.tt_guest
 tt_guest.displayCurrentRecord = 1
+

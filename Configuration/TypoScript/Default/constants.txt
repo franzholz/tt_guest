@@ -1,7 +1,6 @@
 ##
 ## @package TYPO3
 ## @subpackage tt_guest
-## @version $Id$
 ##
 
 
@@ -11,7 +10,7 @@ plugin.tt_guest {
   file.templateFile = EXT:tt_guest/pi/guest_template1.tmpl
 
     # cat=plugin.guestbook/email; type=text; label= Email address of administrator: Set the email here if you want to get notifications with each new guestbook entry
-  notifyEmail = 
+  notifyEmail =
     # cat=plugin.guestbook/email; type=boolean; label= Email check: If you want to verify the validity of an entered email address
   emailCheck = 0
 
@@ -34,4 +33,4 @@ plugin.tt_guest {
 }
 
 
-<INCLUDE_TYPOSCRIPT: source="FILE:EXT:tt_guest/static/share/constants.txt">
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:tt_guest/Configuration/TypoScript/Spam/constants.txt">

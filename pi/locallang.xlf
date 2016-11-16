@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2016-11-16T14:20:35Z" product-name="tt_guest">
+		<header/>
+		<body>
+			<trans-unit id="plugin" xml:space="preserve">
+				<source>Guestbook Plugin</source>
+			</trans-unit>
+			<trans-unit id="title" xml:space="preserve">
+				<source>Header:</source>
+			</trans-unit>
+			<trans-unit id="note" xml:space="preserve">
+				<source>Your comment:</source>
+			</trans-unit>
+			<trans-unit id="cr_name" xml:space="preserve">
+				<source>Name:</source>
+			</trans-unit>
+			<trans-unit id="cr_email" xml:space="preserve">
+				<source>Email:</source>
+			</trans-unit>
+			<trans-unit id="www" xml:space="preserve">
+				<source>Homepage:</source>
+			</trans-unit>
+			<trans-unit id="post" xml:space="preserve">
+				<source>Add yourself</source>
+			</trans-unit>
+			<trans-unit id="nextLabel" xml:space="preserve">
+				<source>next</source>
+			</trans-unit>
+			<trans-unit id="previousLabel" xml:space="preserve">
+				<source>previous</source>
+			</trans-unit>
+			<trans-unit id="comments" xml:space="preserve">
+				<source>Comments</source>
+			</trans-unit>
+			<trans-unit id="missing_required_extension" xml:space="preserve">
+				<source>Required extension '|' is missing.</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>

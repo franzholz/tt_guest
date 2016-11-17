@@ -1,3 +1,6 @@
+2016-11-17 Franz Holzinger <franz@ttproducts.de>
+	* add the cHash parameter to the links in the record navigator
+
 2016-11-16 Franz Holzinger <franz@ttproducts.de>
 	* put the locallang php files into the xlf format
 

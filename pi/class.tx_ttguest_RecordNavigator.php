@@ -90,12 +90,18 @@ class tx_ttguest_RecordNavigator {
 	/* create offset link */
 	public function createOffsetLink ($newOffset, $label, $class) {
 		$pA = array();
+		$bUseCache = TRUE;
+		$target = '';
 		$addQueryParams = '&offset=' . $newOffset . $GLOBALS['TSFE']->linkVars;
+		$linkConf = array();
+		$linkConf = array_merge( array('useCacheHash' => $bUseCache), $linkConf);
 
 		$pageLink = tx_div2007_alpha5::getTypoLink_URL_fh003(
 			$this->cObj,
 			$GLOBALS['TSFE']->id,
-			$addQueryParams
+			$addQueryParams,
+			$target,
+			$linkConf
 		);
 
 		$result = '<li' . ($class ? ' class="' . $class . '"': '') . '>' .

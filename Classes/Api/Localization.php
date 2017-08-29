@@ -25,38 +25,38 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * Part of the tt_guest (Shop System) extension.
- *
- * language object
- *
- * @author	Franz Holzinger <franz@ttproducts.de>
- * @maintainer	Franz Holzinger <franz@ttproducts.de>
- * @package TYPO3
- * @subpackage tt_guest
- *
- *
- */
+* Part of the tt_guest (Shop System) extension.
+*
+* language object
+*
+* @author	Franz Holzinger <franz@ttproducts.de>
+* @maintainer	Franz Holzinger <franz@ttproducts.de>
+* @package TYPO3
+* @subpackage tt_guest
+*
+*
+*/
 
 
 class tx_ttguest_language extends tx_div2007_alpha_language_base {
-	public function init1 ($pObj, &$cObj, &$conf, $scriptRelPath) {
+    public function init1 ($pObj, &$cObj, &$conf, $scriptRelPath) {
 
-		parent::init(
-			$cObj,
-			TT_GUEST_EXT,
-			$conf,
-			$scriptRelPath
-		);
+        parent::init(
+            $cObj,
+            TT_GUEST_EXT,
+            $conf,
+            $scriptRelPath
+        );
 
-		if (isset($pObj->LOCAL_LANG) && is_array($pObj->LOCAL_LANG)) {
-			$this->LOCAL_LANG = &$pObj->LOCAL_LANG;
-		}
-		if (isset($pObj->LOCAL_LANG_charset) && is_array($pObj->LOCAL_LANG_charset)) {
-			$this->LOCAL_LANG_charset = &$pObj->LOCAL_LANG_charset;
-		}
-		if (isset($pObj->LOCAL_LANG_loaded) && is_array($pObj->LOCAL_LANG_loaded)) {
-			$this->LOCAL_LANG_loaded = &$pObj->LOCAL_LANG_loaded;
-		}
-	}
+        if (isset($pObj->LOCAL_LANG) && is_array($pObj->LOCAL_LANG)) {
+            $this->LOCAL_LANG = &$pObj->LOCAL_LANG;
+        }
+        if (isset($pObj->LOCAL_LANG_charset) && is_array($pObj->LOCAL_LANG_charset)) {
+            $this->LOCAL_LANG_charset = &$pObj->LOCAL_LANG_charset;
+        }
+        if (isset($pObj->LOCAL_LANG_loaded) && is_array($pObj->LOCAL_LANG_loaded)) {
+            $this->LOCAL_LANG_loaded = &$pObj->LOCAL_LANG_loaded;
+        }
+    }
 }
 

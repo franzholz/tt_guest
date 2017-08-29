@@ -5,6 +5,7 @@
     * rename guestbook.gif => Resources/Public/Icons/guestbook.gif
     * rename hooks/class.tx_ttguest_hooks_cms.php => Classes/Hooks/CmsBackend.php
     * ready for TYPO3 8.7
+    * add a composer.json file
 
 2016-11-17 Franz Holzinger <franz@ttproducts.de>
 	* add the cHash parameter to the links in the record navigator

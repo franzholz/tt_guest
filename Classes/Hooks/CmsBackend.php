@@ -1,8 +1,11 @@
 <?php
+
+namespace JambageCom\TtGuest\Hooks;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2012 Franz Holzinger <franz@ttproducts.de>
+*  (c) 2017 Franz Holzinger <franz@ttproducts.de>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,19 +28,20 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
-* Part of the tt_guest (Guest Book) extension.
-*
-* hook functions for the TYPO3 cms
-*
-* @author	Franz Holzinger <franz@ttproducts.de>
-* @maintainer	Franz Holzinger <franz@ttproducts.de>
-* @package TYPO3
-* @subpackage tt_guest
-*
-*
-*/
+ * Part of the tt_guest (Guest Book) extension.
+ *
+ * hook functions for the TYPO3 cms
+ *
+ * @author	Franz Holzinger <franz@ttproducts.de>
+ * @maintainer	Franz Holzinger <franz@ttproducts.de>
+ * @package TYPO3
+ * @subpackage tt_guest
+ *
+ *
+ */
 
-class tx_ttguest_hooks_cms extends tx_div2007_hooks_cms {
+
+class CmsBackend extends \JambageCom\Div2007\Base\CmsHookBase {
     public $extKey = TT_GUEST_EXT;
 
 }

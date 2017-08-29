@@ -3,10 +3,6 @@
 ## @subpackage tt_guest
 ##
 
-## Includes the guestLib:
-includeLibs.ts_guest = EXT:tt_guest/pi/class.tx_ttguest.php
-
-
 ## Sets up the fields, that may be submitted in order to create items. Mandatory!
 FEData.tt_guest >
 FEData.tt_guest {
@@ -36,7 +32,7 @@ FEData.tt_guest {
 plugin.tt_guest >
 plugin.tt_guest = USER
 plugin.tt_guest {
-  userFunc = tx_ttguest->main
+  userFunc = JambageCom\TtGuest\Controller\RegisterPluginController->main
 
   templateFile = {$plugin.tt_guest.file.templateFile}
   pid_list.field = pages

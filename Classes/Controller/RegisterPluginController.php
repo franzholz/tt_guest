@@ -1,8 +1,11 @@
 <?php
+
+namespace JambageCom\TtGuest\Controller;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2016 Kasper Skårhøj <kasperYYYY@typo3.com>
+*  (c) 2017 Kasper Skårhøj <kasperYYYY@typo3.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,20 +28,20 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
-* guestLib.inc
-*
-* Creates a guestbook/comment-list.
-*
-* TypoScript config:
-* - See static_template 'plugin.tt_guest'
-* - See TS_ref.pdf
-*
-* Other resources:
-* 'guest_submit.inc' is used for submission of the guest book entries to the database. This is done through the FEData TypoScript object. See the file 'tt_guest/Configuration/TypoScript/Default/setup.txt' for an example of how to set this up.
-*
-* @author	Kasper Skårhøj <kasperYYYY@typo3.com>
-* @author	Franz Holzinger <franz@ttproducts.de>
-*/
+ * guestLib.inc
+ *
+ * Creates a guestbook/comment-list.
+ *
+ * TypoScript config:
+ * - See static_template 'plugin.tt_guest'
+ * - See TS_ref.pdf
+ *
+ * Other resources:
+ * 'guest_submit.php' is used for submission of the guest book entries to the database. This is done through the FEData TypoScript object. See the file 'tt_guest/Configuration/TypoScript/Default/setup.txt' for an example of how to set this up.
+ *
+ * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
+ * @author	Franz Holzinger <franz@ttproducts.de>
+ */
 
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -46,17 +49,37 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 use JambageCom\Div2007\Utility\TableUtility;
 
+class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 
+    /**
+     * The backReference to the mother cObj object set at call time
+     *
+     * @var ContentObjectRenderer
+     */
+    public $cObj;
 
-class tx_ttguest extends tslib_pibase {
-    public $prefixId = 'tx_ttguest';	// Same as class name
-    public $scriptRelPath = 'pi/class.tx_ttguest.php';	// Path to this script relative to the extension dir.
+    /**
+     * Should be same as classname of the plugin, used for CSS classes, variables
+     *
+     * @var string
+     */
+    public $prefixId = 'tt_guest';
+
+    /**
+     * Should normally be set in the main function with the TypoScript content passed to the method.
+     *
+     * $conf[LOCAL_LANG][_key_] is reserved for Local Language overrides.
+     * $conf[userFunc] / $conf[includeLibs]  reserved for setting up the USER / USER_INT object. See TSref
+     *
+     * @var array
+     */
+    public $conf = array();
+
     public $extKey = TT_GUEST_EXT;	// The extension key.
-    public $cObj;			// The backReference to the mother cObj object set at call time
-    public $enableFields ='';		// The enablefields of the tt_guest table.
+    public $enableFields = '';		// The enablefields of the tt_guest table.
     public $dontParseContent = 0;
     public $orig_templateCode = '';
-    public $config = array();		// updated configuration
+    public $config = array();	// updated configuration
     public $pid_list;			// list of page ids
     public $recordCount; 		// number of records
     public $freeCap;
@@ -66,7 +89,6 @@ class tx_ttguest extends tslib_pibase {
     * Main guestbook function.
     */
     public function main ($content, $conf) {
-
         $this->conf = $conf;
 
         if (ExtensionManagementUtility::isLoaded(DIV2007_EXT)) {
@@ -81,7 +103,6 @@ class tx_ttguest extends tslib_pibase {
         } else {
             $content .= 'Error in Guestbook: Extension ' . DIV2007_EXT . ' has not been loaded.';
         }
-
         return $content;
     }
 
@@ -96,8 +117,14 @@ class tx_ttguest extends tslib_pibase {
     */
     public function init ($conf, &$config, &$errorCode) {
 
-        $langObj = GeneralUtility::getUserObj('&tx_ttguest_language');
-        $langObj->init1($this, $this->cObj, $conf, 'pi/class.tx_ttguest.php');
+        $languageObj = GeneralUtility::makeInstance(\JambageCom\TtGuest\Api\Localization::class);
+        $languageObj->init1(
+            $this,
+            $this->cOb,
+            $conf,
+            'Classes/RegisterPluginController.php'
+        );
+        \tx_div2007_alpha5::loadLL_fh002($languageObj, 'EXT:' . TT_GUEST_EXT . '/pi/locallang.xlf');
 
             // pid_list is the pid/list of pids from where to fetch the guest items.
         $tmp = trim($this->cObj->stdWrap($conf['pid_list'], $conf['pid_list.']));
@@ -110,7 +137,7 @@ class tx_ttguest extends tslib_pibase {
             // Static Methods for Extensions for flexform functions
             // check the flexform
         $this->pi_initPIflexForm();
-        $config['code'] = tx_div2007_alpha5::getSetupOrFFvalue_fh004(
+        $config['code'] = \tx_div2007_alpha5::getSetupOrFFvalue_fh004(
             $this,
             $conf['code'],
             $conf['code.'],
@@ -119,8 +146,6 @@ class tx_ttguest extends tslib_pibase {
             'display_mode',
             TRUE
         );
-
-        tx_div2007_alpha5::loadLL_fh002($langObj, 'EXT:' . TT_GUEST_EXT . '/pi/locallang.xlf');
 
             // globally substituted markers, fonts and colors.
         $splitMark = md5(microtime());
@@ -155,8 +180,7 @@ class tx_ttguest extends tslib_pibase {
         if (
             $this->conf['captcha'] == 'freecap' && ExtensionManagementUtility::isLoaded('sr_freecap')
         ) {
-            require_once(ExtensionManagementUtility::extPath('sr_freecap') . 'pi2/class.tx_srfreecap_pi2.php');
-            $this->freeCap = GeneralUtility::getUserObj('&tx_srfreecap_pi2');
+            $this->freeCap = GeneralUtility::makeInstance('tx_srfreecap_pi2');
         }
 
         return TRUE;
@@ -165,17 +189,18 @@ class tx_ttguest extends tslib_pibase {
 
     public function run ($pibaseClass, $conf, $config, &$errorCode, $content = '') {
 
-        $cObj = GeneralUtility::makeInstance('tslib_cObj');	// Initiate new cObj, because we're loading the data-array
+        $local_cObj = \JambageCom\Div2007\Utility\FrontendUtility::getContentObjectRenderer();  // Initiate new cObj, because we're loading the data-array
+
         $alternativeLayouts = intval($conf['alternatingLayouts']) > 0 ? intval($conf['alternatingLayouts']) : 2;
         $codes = GeneralUtility::trimExplode(',', $config['code'], 1);
         if (!count($codes)) {
             $codes = array('');
         }
 
-        $langObj = GeneralUtility::getUserObj('&tx_ttguest_language');
+        $languageObj = GeneralUtility::makeInstance(\JambageCom\TtGuest\Api\Localization::class);
 
         if ($errorCode[0]) {
-            $content .= tx_div2007_error::getMessage($langObj, $errorCode);
+            $content .= \tx_div2007_error::getMessage($languageObj, $errorCode);
             return $content;
         }
 
@@ -190,7 +215,7 @@ class tx_ttguest extends tslib_pibase {
                     }
 
                         // Getting template subpart from file.
-                    $templateCode = $cObj->getSubpart($this->orig_templateCode, '###' . $lConf['subpartMarker'] . '###');
+                    $templateCode = $local_cObj->getSubpart($this->orig_templateCode, '###' . $lConf['subpartMarker'] . '###');
 
                     if ($templateCode) {
                             // Getting the specific parts of the template
@@ -209,45 +234,45 @@ class tx_ttguest extends tslib_pibase {
                         $subpartContent = '';
                         foreach($recentPosts as $recentPost) {
                                 // Passing data through stdWrap and into the markerArray
-                            $cObj->start($recentPost);		// Set this->data to the current record tt_guest record.
+                            $local_cObj->start($recentPost);		// Set this->data to the current record tt_guest record.
                             $markerArray = array();
                             $markerArray['###POST_TITLE###'] =
-                                $cObj->stdWrap(
+                                $local_cObj->stdWrap(
                                     $this->formatStr($recentPost['title']),
                                     $conf['title_stdWrap.']
                                 );
                             $markerArray['###POST_CONTENT###'] =
-                                $cObj->stdWrap(
+                                $local_cObj->stdWrap(
                                     $this->formatStr($recentPost['note']),
                                     $conf['note_stdWrap.']
                                 );
                             $markerArray['###POST_AUTHOR###'] =
-                                $cObj->stdWrap(
+                                $local_cObj->stdWrap(
                                     $this->formatStr($recentPost['cr_name']),
                                     $conf['author_stdWrap.']
                                 );
                             $markerArray['###POST_EMAIL###'] =
-                                $cObj->stdWrap(
+                                $local_cObj->stdWrap(
                                     $this->formatStr($recentPost['cr_email']),
                                     $conf['email_stdWrap.']
                                 );
                             $markerArray['###POST_WWW###'] =
-                                $cObj->stdWrap(
+                                $local_cObj->stdWrap(
                                     $this->formatStr($recentPost['www']),
                                     $conf['www_stdWrap.']
                                 );
                             $markerArray['###POST_DATE###'] =
-                                $cObj->stdWrap(
+                                $local_cObj->stdWrap(
                                     $recentPost['crdate'],
                                     $conf['date_stdWrap.']
                                 );
                             $markerArray['###POST_TIME###'] =
-                                $cObj->stdWrap(
+                                $local_cObj->stdWrap(
                                     $recentPost['crdate'],
                                     $conf['time_stdWrap.']
                                 );
                             $markerArray['###POST_AGE###'] =
-                                $cObj->stdWrap(
+                                $local_cObj->stdWrap(
                                     $recentPost['crdate'],
                                     $conf['age_stdWrap.']
                                 );
@@ -255,7 +280,7 @@ class tx_ttguest extends tslib_pibase {
                             $out=$postHeader[$c_post % count($postHeader)];
                             $c_post++;
                             $subpartContent .=
-                                $cObj->substituteMarkerArrayCached(
+                                $local_cObj->substituteMarkerArrayCached(
                                     $out,
                                     $markerArray
                                 );
@@ -268,9 +293,9 @@ class tx_ttguest extends tslib_pibase {
                             $subpartArray = array();
                             $subpartArray['###CONTENT###'] = $subpartContent;
                             $markerArray = array();
-                            $markerArray['###COMMENTS###'] = tx_div2007_alpha5::getLL_fh003($langObj, 'comments');
+                            $markerArray['###COMMENTS###'] = \tx_div2007_alpha5::getLL_fh003($languageObj, 'comments');
                             $content .=
-                                $cObj->substituteMarkerArrayCached(
+                                $local_cObj->substituteMarkerArrayCached(
                                     $templateCode,
                                     $markerArray,
                                     $subpartArray
@@ -307,7 +332,7 @@ class tx_ttguest extends tslib_pibase {
                                     !is_array($lConf['dataArray.'][$k . '.'][$field . '.']) ||  !is_array($lConf['dataArray.'][$k . '.'][$field . '.']['lang.']) || !is_array($lConf['dataArray.'][$k . '.'][$field . '.']['lang.'][$this->LLkey . '.'])
                                 )
                             ) {
-                                $lConf['dataArray.'][$k . '.'][$field] = tx_div2007_alpha5::getLL_fh003($langObj, $type);
+                                $lConf['dataArray.'][$k . '.'][$field] = \tx_div2007_alpha5::getLL_fh003($languageObj, $type);
                             }
                         }
                     }
@@ -319,7 +344,7 @@ class tx_ttguest extends tslib_pibase {
                             'type' => '*data[tt_guest][NEW][captcha]=input,60'
                         );
                     }
-                    $tmp = $cObj->FORM($lConf);
+                    $tmp = $local_cObj->FORM($lConf);
                     $content .= $tmp;
                 break;
                 default:	// 'HELP'
@@ -330,8 +355,8 @@ class tx_ttguest extends tslib_pibase {
 
             if ($contentTmp == 'error') {
                 if (ExtensionManagementUtility::isLoaded(DIV2007_EXT)) {
-                    $content .= tx_div2007_alpha5::displayHelpPage_fh003(
-                        $langObj,
+                    $content .= \tx_div2007_alpha5::displayHelpPage_fh003(
+                        $languageObj,
                         $this->cObj,
                         $this->cObj->fileResource('EXT:' . TT_GUEST_EXT . '/pi/guest_help.tmpl'),
                         TT_GUEST_EXT,
@@ -388,7 +413,7 @@ class tx_ttguest extends tslib_pibase {
         $out = array();
         for($a = 0; $a < $alternativeLayouts; $a++) {
             $m = '###' . $marker . ($a ? '_' . $a : '') . '###';
-            if(strstr($templateCode,$m)) {
+            if(strstr($templateCode, $m)) {
                 $out[] = $GLOBALS['TSFE']->cObj->getSubpart($templateCode, $m);
             } else {
                 break;
@@ -445,10 +470,10 @@ class tx_ttguest extends tslib_pibase {
     }
 
     public function getPrevNext () {
-        $langObj = GeneralUtility::getUserObj('&tx_ttguest_language');
+        $languageObj = GeneralUtility::makeInstance(\JambageCom\TtGuest\Api\Localization::class);
 
         $nav = GeneralUtility::makeInstance(
-            tx_ttguest_RecordNavigator::class,
+            \tx_ttguest_RecordNavigator::class,
             $this->recordCount,
             $_REQUEST['offset'],
             $this->conf['limit'],
@@ -462,7 +487,11 @@ class tx_ttguest extends tslib_pibase {
             if ($this->conf[$labelKey]) {
                 $labelArray[$k] = $this->conf[$labelKey];
             } else {
-                $labelArray[$k] = tx_div2007_alpha5::getLL_fh003($langObj, $labelKey);
+                $labelArray[$k] =
+                    \tx_div2007_alpha5::getLL_fh003(
+                        $languageObj,
+                        $labelKey
+                    );
             }
         }
         $previousLabel = $this->conf['previousLabel'];

@@ -41,14 +41,9 @@ if (
     TYPO3_MODE == 'BE'
 ) {
     // replace the output of the former CODE field with the flexform
-    $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][3][] = 'EXT:' . $_EXTKEY . '/hooks/class.tx_ttguest_hooks_cms.php:&tx_ttguest_hooks_cms->pmDrawItem';
-}
-
-
-if (TYPO3_MODE == 'BE') {
+	$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['cms/layout/class.tx_cms_layout.php']['list_type_Info'][3][] = 'JambageCom\\TtGuest\\Hooks\\CmsBackend->pmDrawItem';
     call_user_func($emClass . '::addUserTSConfig', 'options.saveDocNew.tt_guest=1');
 }
-
 
 if (
     isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['livesearch']) &&

@@ -1,3 +1,11 @@
+2017-08-29 Franz Holzinger <franz@ttproducts.de>
+    * rename pi/class.tx_ttguest.php => Classes/Controller/RegisterPluginController.php
+    * rename model/class.tx_ttguest_language.php => Classes/Api/Localization.php
+    * rename class.tx_ttguest_wizicon.php => Classes/Controller/WizardIcon.php
+    * rename guestbook.gif => Resources/Public/Icons/guestbook.gif
+    * rename hooks/class.tx_ttguest_hooks_cms.php => Classes/Hooks/CmsBackend.php
+    * ready for TYPO3 8.7
+
 2016-11-17 Franz Holzinger <franz@ttproducts.de>
 	* add the cHash parameter to the links in the record navigator
 

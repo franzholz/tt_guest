@@ -11,11 +11,10 @@ call_user_func($emClass . '::addPiFlexFormValue', '3', 'FILE:EXT:' . $_EXTKEY . 
 call_user_func($emClass . '::addPlugin', array('LLL:EXT:' . $_EXTKEY . '/locallang_tca.xlf:tt_content.list_type_pi', '3'), 'list_type');
 call_user_func($emClass . '::allowTableOnStandardPages', 'tt_guest');
 call_user_func($emClass . '::addToInsertRecords', 'tt_guest');
+call_user_func($emClass . '::addLLrefForTCAdescr', 'tt_guest', 'EXT:' . $_EXTKEY . '/locallang_csh_ttguest.xlf');
+
 
 if (TYPO3_MODE == 'BE') {
-	$GLOBALS['TBE_MODULES_EXT']['xMOD_db_new_content_el']['addElClasses']['tx_ttguest_wizicon'] =
-		PATH_BE_TTGUEST . 'class.tx_ttguest_wizicon.php';
+    $GLOBALS['TBE_MODULES_EXT']['xMOD_db_new_content_el']['addElClasses']['JambageCom\\TtGuest\\Controller\\WizardIcon'] = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($_EXTKEY) . 'Classes/Controller/WizardIcon.php';
 }
-
-call_user_func($emClass . '::addLLrefForTCAdescr', 'tt_guest', 'EXT:' . $_EXTKEY . '/locallang_csh_ttguest.xlf');
 

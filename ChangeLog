@@ -4,6 +4,8 @@
     * rename pi/guest_submit.php => Classes/Controller/Submit.php
     * bugfix and better support for captcha
     * restructure RegisterPluginController::run with code POSTFORM: extract Form as a new class with a render method
+    * new feature: privacy policy checkbox for GDPR
+    * set PIDprivacyPolicy to the privacy policy page.
 
 2017-08-29 Franz Holzinger <franz@ttproducts.de>
     * rename pi/class.tx_ttguest.php => Classes/Controller/RegisterPluginController.php

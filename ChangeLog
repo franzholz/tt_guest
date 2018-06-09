@@ -1,3 +1,10 @@
+
+2018-06-09 Franz Holzinger <franz@ttproducts.de>
+    * rename pi/class.tx_ttguest_RecordNavigator.php => Classes/View/RecordNavigator.php
+    * rename pi/guest_submit.php => Classes/Controller/Submit.php
+    * bugfix and better support for captcha
+    * restructure RegisterPluginController::run with code POSTFORM: extract Form as a new class with a render method
+
 2017-08-29 Franz Holzinger <franz@ttproducts.de>
     * rename pi/class.tx_ttguest.php => Classes/Controller/RegisterPluginController.php
     * rename model/class.tx_ttguest_language.php => Classes/Api/Localization.php

@@ -6,7 +6,7 @@
 ## Sets up the fields, that may be submitted in order to create items. Mandatory!
 FEData.tt_guest >
 FEData.tt_guest {
-  processScript = EXT:tt_guest/pi/guest_submit.php
+  processScript = JambageCom\TtGuest\Controller\Submit->execute
   processScript.notifyEmail = {$plugin.tt_guest.notifyEmail}
   processScript.emailCheck = {$plugin.tt_guest.emailCheck}
   processScript.captcha = {$plugin.tt_guest.captcha}
@@ -38,6 +38,7 @@ plugin.tt_guest {
   pid_list.field = pages
   code.field = select_key
   captcha = {$plugin.tt_guest.captcha}
+  PIDprivacyPolicy = {$plugin.tt_guest.PIDprivacyPolicy}
 
   limit = 8
 
@@ -61,20 +62,33 @@ plugin.tt_guest {
   postform < tt_content.mailform.20
   postform.data >
   postform.dataArray {
+# Subject:
     10.label = Header:
     10.type = *data[tt_guest][NEW][title]=input
+# Comment / Note:
     20.label = Your comment:
     20.type = *data[tt_guest][NEW][note]=textarea
+# Name:
     30.label = Name:
     30.type = *data[tt_guest][NEW][cr_name]=input
+# E-Mail:
     40.label = Email:
     40.type = *data[tt_guest][NEW][cr_email]=input
+# Homepage:
     50.label = Homepage:
     50.type = *data[tt_guest][NEW][www]=input
-    60.type = formtype_db=submit
-    60.value = Add yourself
+# Captcha:
+    55.label =
+# Privacy policy:
+    60.label =
+    61.label =
+    61.type = privacy_policy=check
+# Post Reply button
+    300.type = formtype_db=submit
+    300.value = Add yourself
   }
   postform.no_cache = 1
+  postform.dontXssFieldNames = captcha
 }
 
 ## This enables the tt_content.record item to display guestbook items:

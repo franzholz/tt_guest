@@ -4,7 +4,6 @@
 ##
 
 
-plugin.tt_guest >
 plugin.tt_guest {
     # cat=plugin.guestbook/file; type=file[html,htm,tmpl,txt]; label= Template File: This is a simple textfile where the guestbook is defined with HTML-code. To see an example with explanations, take a look at EXT:tt_guest/pi/guest_template1.tmpl which provides a good example
   file.templateFile = EXT:tt_guest/pi/guest_template1.tmpl
@@ -14,8 +13,11 @@ plugin.tt_guest {
     # cat=plugin.guestbook/email; type=boolean; label= Email check: If you want to verify the validity of an entered email address
   emailCheck = 0
 
-    # cat=plugin.board/captcha; type=string; label= Captcha check: If you want to display the captcha view and field.
-  captcha = freecap
+    # cat=plugin.guestbook/captcha; type=string; label= Captcha check: If you want to display the captcha view and field. freecap or captcha are supported.
+  captcha =
+
+    # cat=plugin.guestbook//; type=string; label= Privacy Policy url: Page (id) where the privacy policy is shown. If you want to show a privacy policy checkbox and hints for not registered front end users. This is needed for compliance with DSGVO / GDPR .
+  PIDprivacyPolicy =
 
     # cat=plugin.guestbook/typo; type=wrap; label= Wrap 1: This wrap is used in the template-file.
   wrap1 = <font face="verdana" size=2 color=black> | </font>

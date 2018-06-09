@@ -1,8 +1,11 @@
 <?php
+
+namespace JambageCom\TtGuest\View;
+
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2016 Kasper Skårhøj <kasperYYYY@typo3.com>
+*  (c) 2018 Kasper Skårhøj <kasperYYYY@typo3.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -25,7 +28,7 @@
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * class.tx_ttguest_RecordNavigator.php
+ * RecordNavigator.php
  *
  * Name: Class.RecordNavigator.php
  * Type: Class
@@ -39,7 +42,7 @@
  * 	"yourscript.php?catid=1"
  * );
  * $RN->createSequence();
- * $RN->createPrevNext("previous", "next");
+ * $RN->createPrevNext('previous', 'next');
  * echo($RN->getNavigator());
  *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
@@ -48,98 +51,100 @@
 
 use \TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
-class tx_ttguest_RecordNavigator {
-	protected $queryCount;
-	protected $offset;
-	protected $limiter;
-	protected $seqStr;
-	protected $scriptPath;
 
-	protected $cObj = null; // for making typo3 links
+class RecordNavigator {
+    protected $queryCount;
+    protected $offset;
+    protected $limiter;
+    protected $seqStr;
 
-	/* constructor */
-	public function __construct ($queryCount, $offset, $limiter, $scriptpath) {
-		$this->queryCount 	= $queryCount;
-		$this->offset 		= $offset;
-		$this->limiter		= $limiter;
-		$this->scriptPath 	= $scriptpath;
+    protected $cObj = null; // for making typo3 links
 
-		$this->cObj = new ContentObjectRenderer();
-	}
+    /* constructor */
+    public function __construct ($queryCount, $offset, $limiter)
+    {
+        $this->queryCount 	= $queryCount;
+        $this->offset 		= $offset;
+        $this->limiter		= $limiter;
 
-	/* create page # sequence */
-	public function createSequence () {
+        $this->cObj = new ContentObjectRenderer();
+    }
 
-		$numPages = ceil($this->queryCount / $this->limiter);
-		$nextOffset = 0;
+    /* create page # sequence */
+    public function createSequence ()
+    {
+        $numPages = ceil($this->queryCount / $this->limiter);
+        $nextOffset = 0;
 
-		/* if there are more records than currently counted, generate sequence */
-		if($this->queryCount > $this->limiter) {
-			for($i = 1; $i <= $numPages; $i++) {
-				if($this->offset != $nextOffset) {
-					$this->seqStr .= $this->createOffsetLink($nextOffset, $i, '');
-				}
-				else {
-					$this->seqStr .= '<li class="current">' . $i . '</li>';
-				}
-				$nextOffset += $this->limiter;
-			}
-		}
-	}
+        /* if there are more records than currently counted, generate sequence */
+        if($this->queryCount > $this->limiter) {
+            for($i = 1; $i <= $numPages; $i++) {
+                if($this->offset != $nextOffset) {
+                    $this->seqStr .= $this->createOffsetLink($nextOffset, $i, '');
+                }
+                else {
+                    $this->seqStr .= '<li class="current">' . $i . '</li>';
+                }
+                $nextOffset += $this->limiter;
+            }
+        }
+    }
 
-	/* create offset link */
-	public function createOffsetLink ($newOffset, $label, $class) {
-		$pA = array();
-		$bUseCache = TRUE;
-		$target = '';
-		$addQueryParams = '&offset=' . $newOffset . $GLOBALS['TSFE']->linkVars;
-		$linkConf = array();
-		$linkConf = array_merge( array('useCacheHash' => $bUseCache), $linkConf);
+    /* create offset link */
+    public function createOffsetLink ($newOffset, $label, $class)
+    {
+        $pA = array();
+        $useCache = true;
+        $target = '';
+        $addQueryParams = '&offset=' . $newOffset . $GLOBALS['TSFE']->linkVars;
+        $linkConf = array();
+        $linkConf = array_merge( array('useCacheHash' => $useCache), $linkConf);
 
-		$pageLink = tx_div2007_alpha5::getTypoLink_URL_fh003(
-			$this->cObj,
-			$GLOBALS['TSFE']->id,
-			$addQueryParams,
-			$target,
-			$linkConf
-		);
+        $pageLink = tx_div2007_alpha5::getTypoLink_URL_fh003(
+            $this->cObj,
+            $GLOBALS['TSFE']->id,
+            $addQueryParams,
+            $target,
+            $linkConf
+        );
 
-		$result = '<li' . ($class ? ' class="' . $class . '"': '') . '>' .
-			'<a href="' . htmlspecialchars($pageLink) . '"' . '>' .
-			htmlspecialchars($label) . '</a>' .
-			'</li>';
+        $result = '<li' . ($class ? ' class="' . $class . '"': '') . '>' .
+            '<a href="' . htmlspecialchars($pageLink) . '"' . '>' .
+            htmlspecialchars($label) . '</a>' .
+            '</li>';
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/* create previous/next links */
-	public function createPrevNext ($prevLabel, $nextLabel) {
+    /* create previous/next links */
+    public function createPrevNext ($prevLabel, $nextLabel)
+    {
+        if ((int) $this->offset != 0) {
+            $this->seqStr =
+                $this->createOffsetLink(
+                    $this->offset - $this->limiter,
+                    $prevLabel,
+                    'prev'
+                ) .
+                $this->seqStr;
+        }
 
-		if ((int) $this->offset != 0) {
-			$this->seqStr =
-				$this->createOffsetLink(
-					$this->offset - $this->limiter,
-					$prevLabel,
-					'prev'
-				) .
-				$this->seqStr;
-		}
+        if ($this->queryCount > ($this->offset + $this->limiter)) {
+            $this->seqStr =
+                $this->seqStr .
+                $this->createOffsetLink(
+                    $this->offset + $this->limiter,
+                    $nextLabel,
+                    'next'
+                );
+        }
+    }
 
-		if ($this->queryCount > ($this->offset + $this->limiter)) {
-			$this->seqStr =
-				$this->seqStr .
-				$this->createOffsetLink(
-					$this->offset + $this->limiter,
-					$nextLabel,
-					'next'
-				);
-		}
-	}
-
-	/* return full navigation string */
-	public function getNavigator () {
-		return '<ul class="prevnext">' . $this->seqStr . '</ul>';
-	}
+    /* return full navigation string */
+    public function getNavigator ()
+    {
+        return '<ul class="prevnext">' . $this->seqStr . '</ul>';
+    }
 }
 
 

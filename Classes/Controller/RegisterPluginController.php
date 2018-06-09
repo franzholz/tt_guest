@@ -5,7 +5,7 @@ namespace JambageCom\TtGuest\Controller;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2017 Kasper Skårhøj <kasperYYYY@typo3.com>
+*  (c) 2018 Kasper Skårhøj <kasperYYYY@typo3.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -28,8 +28,6 @@ namespace JambageCom\TtGuest\Controller;
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
 /**
- * guestLib.inc
- *
  * Creates a guestbook/comment-list.
  *
  * TypoScript config:
@@ -37,7 +35,7 @@ namespace JambageCom\TtGuest\Controller;
  * - See TS_ref.pdf
  *
  * Other resources:
- * 'guest_submit.php' is used for submission of the guest book entries to the database. This is done through the FEData TypoScript object. See the file 'tt_guest/Configuration/TypoScript/Default/setup.txt' for an example of how to set this up.
+ * 'Contoller/Submit.php' is used for submission of the guest book entries to the database. This is done through the FEData TypoScript object. See the file 'tt_guest/Configuration/TypoScript/Default/setup.txt' for an example of how to set this up.
  *
  * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
  * @author	Franz Holzinger <franz@ttproducts.de>
@@ -49,8 +47,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 use JambageCom\Div2007\Utility\TableUtility;
 
-class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
-
+class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
+{
     /**
      * The backReference to the mother cObj object set at call time
      *
@@ -82,13 +80,13 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     public $config = array();	// updated configuration
     public $pid_list;			// list of page ids
     public $recordCount; 		// number of records
-    public $freeCap;
 
 
     /**
     * Main guestbook function.
     */
-    public function main ($content, $conf) {
+    public function main ($content, $conf)
+    {
         $this->conf = $conf;
 
         if (ExtensionManagementUtility::isLoaded(DIV2007_EXT)) {
@@ -106,7 +104,6 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         return $content;
     }
 
-
     /**
     * does the initialization stuff
     *
@@ -115,16 +112,17 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     * @param		string		  modified configuration array
     * @return	  void
     */
-    public function init ($conf, &$config, &$errorCode) {
+    public function init ($conf, &$config, &$errorCode)
+    {
 
         $languageObj = GeneralUtility::makeInstance(\JambageCom\TtGuest\Api\Localization::class);
-        $languageObj->init1(
-            $this,
-            $this->cOb,
-            $conf,
+        $languageObj->init(
+            TT_GUEST_EXT,
+            $conf['_LOCAL_LANG.'],
             'Classes/RegisterPluginController.php'
         );
-        \tx_div2007_alpha5::loadLL_fh002($languageObj, 'EXT:' . TT_GUEST_EXT . '/pi/locallang.xlf');
+
+        $languageObj->loadLocalLang('EXT:' . TT_GUEST_EXT . '/pi/locallang.xlf', false);
 
             // pid_list is the pid/list of pids from where to fetch the guest items.
         $tmp = trim($this->cObj->stdWrap($conf['pid_list'], $conf['pid_list.']));
@@ -144,7 +142,7 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $this->conf['defaultCode'],
             $this->cObj->data['pi_flexform'],
             'display_mode',
-            TRUE
+            true
         );
 
             // globally substituted markers, fonts and colors.
@@ -177,20 +175,11 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 $globalMarkerArray
             );
 
-        if (
-            $this->conf['captcha'] == 'freecap' && ExtensionManagementUtility::isLoaded('sr_freecap')
-        ) {
-            $this->freeCap = GeneralUtility::makeInstance('tx_srfreecap_pi2');
-        }
-
-        return TRUE;
+        return true;
     }
 
-
-    public function run ($pibaseClass, $conf, $config, &$errorCode, $content = '') {
-
-        $local_cObj = \JambageCom\Div2007\Utility\FrontendUtility::getContentObjectRenderer();  // Initiate new cObj, because we're loading the data-array
-
+    public function run ($pibaseClass, $conf, $config, &$errorCode, $content = '')
+    {
         $alternativeLayouts = intval($conf['alternatingLayouts']) > 0 ? intval($conf['alternatingLayouts']) : 2;
         $codes = GeneralUtility::trimExplode(',', $config['code'], 1);
         if (!count($codes)) {
@@ -203,11 +192,13 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
             $content .= \tx_div2007_error::getMessage($languageObj, $errorCode);
             return $content;
         }
+        $table = 'tt_guest';
 
         foreach($codes as $theCode) {
             $theCode = (string) strtoupper(trim($theCode));
             switch($theCode) {
                 case 'GUESTBOOK':
+                    $local_cObj = \JambageCom\Div2007\Utility\FrontendUtility::getContentObjectRenderer();  // Initiate new cObj, because we're loading the data-array
                     $lConf = $conf;
 
                     if (!$lConf['subpartMarker']) {
@@ -293,7 +284,7 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                             $subpartArray = array();
                             $subpartArray['###CONTENT###'] = $subpartContent;
                             $markerArray = array();
-                            $markerArray['###COMMENTS###'] = \tx_div2007_alpha5::getLL_fh003($languageObj, 'comments');
+                            $markerArray['###COMMENTS###'] = $languageObj->getLabel('comments');
                             $content .=
                                 $local_cObj->substituteMarkerArrayCached(
                                     $templateCode,
@@ -302,50 +293,32 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                                 );
                         }
                     } else {
-                        debug('No template code for the subpart maker ###' . $lConf['subpartMarker'] . '###');
+                        debug('No template code for the subpart maker ###' . $lConf['subpartMarker'] . '###'); // keep this
                     }
 
                 break;
                 case 'POSTFORM':
-                    $lConf = $conf['postform.'];
-                    $setupArray =
-                        array(
-                            '10' => 'title',
-                            '20' => 'note',
-                            '30' => 'cr_name',
-                            '40' => 'cr_email',
-                            '50' => 'www',
-                            '60' => 'post'
+                    $pidArray =
+                        GeneralUtility::trimExplode(
+                            ',',
+                            $this->pid_list
+                        );
+                    $pid = $pidArray[0];
+                    $form =
+                        GeneralUtility::makeInstance(
+                            \JambageCom\TtGuest\View\Form::class
+                        );
+                    $newContent =
+                        $form->render(
+                            $languageObj,
+                            $theCode,
+                            $pid,
+                            intval($conf['PIDprivacyPolicy']),
+                            $conf['captcha'],
+                            $conf['postform.']
                         );
 
-                    foreach ($setupArray as $k => $type) {
-                        if ($k == '60') {
-                            $field = 'value';
-                        } else {
-                            $field = 'label';
-                        }
-
-                        if (is_array($lConf['dataArray.'][$k . '.'])) {
-                            if (
-                                (!$this->LLkey || $this->LLkey == 'en') && !$lConf['dataArray.'][$k . '.'][$field] ||
-                                ($this->LLkey != 'en' &&
-                                    !is_array($lConf['dataArray.'][$k . '.'][$field . '.']) ||  !is_array($lConf['dataArray.'][$k . '.'][$field . '.']['lang.']) || !is_array($lConf['dataArray.'][$k . '.'][$field . '.']['lang.'][$this->LLkey . '.'])
-                                )
-                            ) {
-                                $lConf['dataArray.'][$k . '.'][$field] = \tx_div2007_alpha5::getLL_fh003($languageObj, $type);
-                            }
-                        }
-                    }
-
-                    if (is_object($this->freeCap)) {
-                        $freecapMarker = $this->freeCap->makeCaptcha();
-                        $lConf['dataArray.']['55.'] = array(
-                            'label' => $freecapMarker['###SR_FREECAP_IMAGE###'] . '<br>' . $freecapMarker['###SR_FREECAP_NOTICE###'] . '<br>' . $freecapMarker['###SR_FREECAP_CANT_READ###'],
-                            'type' => '*data[tt_guest][NEW][captcha]=input,60'
-                        );
-                    }
-                    $tmp = $local_cObj->FORM($lConf);
-                    $content .= $tmp;
+                    $content .= $newContent;
                 break;
                 default:	// 'HELP'
                     $GLOBALS['TSFE']->set_no_cache();
@@ -405,11 +378,11 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         return $result;
     }
 
-
     /**
     * Main guestbook function.
     */
-    public function getLayouts ($templateCode, $alternativeLayouts, $marker) {
+    public function getLayouts ($templateCode, $alternativeLayouts, $marker)
+    {
         $out = array();
         for($a = 0; $a < $alternativeLayouts; $a++) {
             $m = '###' . $marker . ($a ? '_' . $a : '') . '###';
@@ -426,7 +399,8 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
     * Main guestbook function.
     */
-    public function getItems ($pid) {
+    public function getItems ($pid_list)
+    {
         if(!isset($_REQUEST['offset'])) {
             $offset = 0;
         }
@@ -437,7 +411,7 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
         $out = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
             '*',
             'tt_guest',
-            'pid IN (' . $pid . ')' . $this->enableFields,
+            'pid IN (' . $pid_list . ')' . $this->enableFields,
             '',
             'crdate DESC',
             $offset . ', ' . $this->conf['limit']
@@ -450,7 +424,8 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     /**
     * Main guestbook function.
     */
-    public function formatStr ($str) {
+    public function formatStr ($str)
+    {
         if (!$this->dontParseContent) {
             return nl2br(htmlspecialchars($str));
         } else {
@@ -459,25 +434,26 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
     }
 
 
-    public function getRecordCount ($pid) {
+    public function getRecordCount ($pid_list)
+    {
         $thecount = $GLOBALS['TYPO3_DB']->exec_SELECTcountRows(
             '*',
             'tt_guest',
-            'pid IN (' . $pid . ')' . $this->enableFields
+            'pid_list IN (' . $pid_list . ')' . $this->enableFields
         );
 
         return $thecount;
     }
 
-    public function getPrevNext () {
+    public function getPrevNext ()
+    {
         $languageObj = GeneralUtility::makeInstance(\JambageCom\TtGuest\Api\Localization::class);
 
         $nav = GeneralUtility::makeInstance(
-            \tx_ttguest_RecordNavigator::class,
+            \JambageCom\TtGuest\View\RecordNavigator::class,
             $this->recordCount,
-            $_REQUEST['offset'],
-            $this->conf['limit'],
-            '?pid=' . $GLOBALS['TSFE']->id
+            intval($_REQUEST['offset']),
+            $this->conf['limit']
         );
         $nav->createSequence();
 
@@ -488,8 +464,7 @@ class RegisterPluginController extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin
                 $labelArray[$k] = $this->conf[$labelKey];
             } else {
                 $labelArray[$k] =
-                    \tx_div2007_alpha5::getLL_fh003(
-                        $languageObj,
+                    $languageObj->getLabel(
                         $labelKey
                     );
             }

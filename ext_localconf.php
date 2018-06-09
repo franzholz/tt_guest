@@ -24,6 +24,10 @@ if (!defined ('PATH_FE_TTGUEST_REL')) {
     define('PATH_FE_TTGUEST_REL', call_user_func($emClass . '::siteRelPath', $_EXTKEY));
 }
 
+if (!defined ('TT_GUEST_CSS_PREFIX')) {
+    define('TT_GUEST_CSS_PREFIX', 'tx-ttguest-');
+}
+
 
 if (isset($_EXTCONF) && is_array($_EXTCONF)) {
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY] = $_EXTCONF;
@@ -45,18 +49,6 @@ if (
     call_user_func($emClass . '::addUserTSConfig', 'options.saveDocNew.tt_guest=1');
 }
 
-if (
-    isset($GLOBALS['TYPO3_CONF_VARS']['SYS']['livesearch']) &&
-    is_array($GLOBALS['TYPO3_CONF_VARS']['SYS']['livesearch'])
-) {
-    // livesearch
-    $GLOBALS['TYPO3_CONF_VARS']['SYS']['livesearch'] = array_merge(
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['livesearch'],
-        array(
-            'tt_guest' => 'tt_guest'
-        )
-    );
-}
 
 // add missing setup for the tt_content "list_type = 3" which is used by tt_guest
 $addLine = 'tt_content.list.20.3 = < plugin.tt_guest';
@@ -70,4 +62,12 @@ call_user_func(
 ',
     43
 );
+
+
+// Configure captcha hooks
+if (!is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['captcha'])) {
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['captcha'] = [];
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['captcha'][] = 'JambageCom\\Div2007\\Captcha\\Captcha';
+    $GLOBALS['TYPO3_CONF_VARS']['EXTCONF'][$_EXTKEY]['captcha'][] = 'JambageCom\\Div2007\\Captcha\\Freecap';
+}
 

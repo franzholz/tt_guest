@@ -5,7 +5,7 @@ namespace JambageCom\TtGuest\Api;
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2017 Franz Holzinger (franz@ttproducts.de)
+*  (c) 2018 Franz Holzinger (franz@ttproducts.de)
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is
@@ -41,37 +41,8 @@ namespace JambageCom\TtGuest\Api;
 
 
 
-class Localization extends \JambageCom\Div2007\Base\LocalisationBase implements \TYPO3\CMS\Core\SingletonInterface {
+class Localization extends \JambageCom\Div2007\Base\TranslationBase implements \TYPO3\CMS\Core\SingletonInterface {
 
-    public function init1 ($pObj, $cObj, $conf, $scriptRelPath) {
-
-        $this->init(
-            $cObj,
-            TT_GUEST_EXT,
-            $conf,
-            $scriptRelPath
-        );
-
-        // keep previsous language settings if available
-        if (
-            isset($pObj->LOCAL_LANG) &&
-            is_array($pObj->LOCAL_LANG)
-        ) {
-            $this->setLocallang($pObj->LOCAL_LANG);
-        }
-
-        if (
-            isset($pObj->LOCAL_LANG_charset) &&
-            is_array($pObj->LOCAL_LANG_charset)
-        ) {
-            $this->setLocallangCharset($pObj->LOCAL_LANG_charset);
-        }
-
-        if (isset($pObj->LOCAL_LANG_loaded)) {
-            $this->setLocallangLoaded($pObj->LOCAL_LANG_loaded);
-        }
-
-        return true;
-    }
 }
+
 

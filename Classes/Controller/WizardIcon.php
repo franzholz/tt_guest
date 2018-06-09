@@ -40,7 +40,7 @@ class WizardIcon
     public function proc (array $wizardItems)
     {
         /** @var \TYPO3\CMS\Core\Imaging\IconRegistry $iconRegistry */
-        $iconRegistry = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Imaging\\IconRegistry');
+        $iconRegistry = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class);
         $iconPath = 'Resources/Public/Icons/';
 
         $params = '&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=3&defVals[tt_content][select_key]=' . rawurlencode('GUESTBOOK, POSTFORM');
@@ -59,7 +59,6 @@ class WizardIcon
             )
         );
         $wizardItem['iconIdentifier'] = $iconIdentifier;
-
         $wizardItems['plugins_ttguest'] = $wizardItem;
 
         return $wizardItems;

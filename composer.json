@@ -35,7 +35,6 @@
     ]
   },
   "replace": {
-    "jambagecom/tt-guest": "self.version",
     "typo3-ter/tt-guest": "self.version"
   },
   "extra": {
